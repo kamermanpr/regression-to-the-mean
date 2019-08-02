@@ -1,0 +1,48 @@
+ID,authors,pain_requirement,scale,included_in_analysis,sample_size,mean_or_median,value,SD,note_1
+1,Leijon_1989,Not specified,vas_nrs,no,,,,,No baseline data
+2,Max_1987,Not specified,verbal_scale,no,,,,,
+3,Max_1991,Not specified,verbal_scale,no,,,,,
+4,Watson_1982,Not specified,verbal_scale and vas_nrs,no,,,,,VAS data not reported
+5,Max_1988,Not specified,verbal_scale,no,,,,,
+6,Graff.Radford_2000,Not specified,vas_nrs,yes,13,mean,5.39,1.71,
+7,Graff.Radford_2001,Not specified,vas_nrs,yes,11,mean,5.59,1.96,
+8,Graff.Radford_2002,Not specified,vas_nrs,yes,12,mean,4.76,1.34,
+9,Graff.Radford_2003,Not specified,vas_nrs,yes,13,mean,6.54,1.09,
+10,Kishore.Kumar_1990,Not specified,verbal_scale,no,,,,,
+11,Panerai_1990,Not specified,vas_nrs,yes,8,mean,4.9,1.7,
+12,Panerai_1991,Not specified,vas_nrs,yes,8,mean,4.6,1.7,
+13,Panerai_1992,Not specified,vas_nrs,yes,8,mean,3.7,1.3,
+14,Hahn_2004,Not specified,vas_nrs,yes,11,median,4.7,,
+15,Hahn_2004,Not specified,vas_nrs,yes,15,median,5.1,,
+16,Semenchuk_2001,Not specified,vas_nrs,yes,41,mean,5.7,1.66,
+17,McCleane_1999,Not specified,vas_nrs,yes,74,mean,6.76,,
+18,Kochar_2002,Not specified,vas_nrs,yes,30,mean,4.9,1.85,
+19,Kochar_2002,Not specified,vas_nrs,yes,30,mean,5,1.95,
+20,Drewes_1994,Not specified,vas_nrs,no,,,,,No baseline data
+21,Rog_2005,Not specified,vas_nrs,yes,32,mean,6.4,1.7,
+22,Rog_2005,Not specified,vas_nrs,yes,34,mean,6.5,1.6,
+23,Selvarajah_2010,Not specified,vas_nrs,no,,,,,Used Neuropathy Total Symptom Score 
+24,Caps.group_1992,Moderate to severe pain,vas_nrs,no,,,,,
+25,Low_1995,Not specified,vas_nrs,yes,39,median,8.4,,X-over trial. Only used placebo group data
+26,Kulkantrakorn_2012,Not specified,vas_nrs,yes,33,mean,5,2.9,X-over trial. Only used placebo group data
+27,McCleane_2000,Not specified,vas_nrs,yes,41,mean,7.13,,
+28,McCleane_2000,Not specified,vas_nrs,yes,41,mean,7.29,,
+29,McCleane_2000,Not specified,vas_nrs,yes,33,mean,7.11,,
+30,McCleane_2000,Not specified,vas_nrs,yes,36,mean,7.47,,
+31,Eisenberg_1998,Not specified,vas_nrs,yes,11,mean,6.1,1.98,
+32,Eisenberg_1998,Not specified,vas_nrs,yes,9,mean,7,1.8,
+33,Chiou.tan_1995,Not specified,vas_nrs,yes,5,mean,7.8,1.7,X-over trial. Only used placebo group data (phase 1)
+34,Chiou.tan_1996,Not specified,vas_nrs,yes,6,mean,8.7,1.5,X-over trial. Only used placebo group data (phase 2)
+35,Oskarsson_1997,Not specified,vas_nrs,yes,31,mean,5.27,,
+36,Oskarsson_1997,Not specified,vas_nrs,yes,33,mean,4.43,,
+37,Oskarsson_1997,Not specified,vas_nrs,yes,31,mean,4.35,,
+38,Oskarsson_1997,Not specified,vas_nrs,yes,31,mean,4.95,,
+39,Chabal_1992,Not specified,vas_nrs,yes,11,mean,6.8,1.99,
+40,Wu_2008,pain > 3/10,vas_nrs,no,,,,,
+41,Yuen_2002,Not specified,vas_nrs,yes,22,median,5,,X-over trial. Only used placebo group data
+42,Staughton_1990,Not specified,verbal_scale,no,,,,,
+43,Surman_1990,Not specified,verbal_scale,no,,,,,
+44,Mishra_2012,Not specified,vas_nrs,yes,30,mean,7.5,1,
+45,Mishra_2012,Not specified,vas_nrs,yes,30,mean,7.5,1.1,
+46,Mishra_2012,Not specified,vas_nrs,yes,30,mean,7.8,0.81,
+47,Mishra_2012,Not specified,vas_nrs,yes,30,mean,7.8,1,
