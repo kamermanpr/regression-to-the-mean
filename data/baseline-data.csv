@@ -1,4 +1,4 @@
-ID,authors,pain_requirement,scale,included_in_analysis,sample_size,mean_or_median,value,SD,note_1
+ID,authors,pain_requirement,scale,included_in_analysis,sample_size,mean_or_median,value,sd,additional_notes
 1,Leijon_1989,Not specified,vas_nrs,no,,,,,No baseline data
 2,Max_1987,Not specified,verbal_scale,no,,,,,
 3,Max_1991,Not specified,verbal_scale,no,,,,,
