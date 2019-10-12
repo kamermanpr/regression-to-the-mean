@@ -3,6 +3,7 @@ title: "Regression to the mean modeling"
 subtitle: "Mean pain rating of 5.2 at 0.5 correlation"
 author: "Peter Kamerman"
 date: "Last knitted: `r format(Sys.Date(), '%d %B %Y')`"
+geometry: margin=15mm
 ---
 
 ```{r include = FALSE}
@@ -49,10 +50,15 @@ opts_chunk$set(fig.height = 8,
 Generate a covariance matrix using an SD of 1.2, 1.7, and 2.2, and correlation of 0.5.
 
 ```{r cov_matrix}
+# Correlation matrices
 cor <- matrix(c(1, 0.5, 0.5, 1), ncol = 2)
+
+# SDs
 std_1 <- c(1.2, 1.2)
 std_2 <- c(1.7, 1.7)
 std_3 <- c(2.2, 2.2)
+
+# Covariance matrices
 cov_1 <- cor2cov(cor.mat = cor,
                  sd = std_1)
 cov_1
@@ -66,7 +72,7 @@ cov_3
 
 ----
 
-# Mean = 5.2, SD = 1.2, Cor = 0.5
+# Mean = 5.2, SD = 1.2, r = 0.5
 
 ## Generate and summarise data
 
@@ -93,7 +99,8 @@ ggMarginal(ggplot(data = five_1.base) +
                          alpha = 0,
                          linetype = 2) +
                annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
-                        label = str_glue("r = {round(cor(five_1.base$V1, five_1.base$V2), 2)}")) +
+                        label = str_glue("r = {round(cor(five_1.base$V1, 
+                                         five_1.base$V2), 2)}")) +
                annotate(geom = 'text', x = -5, y = mean(five_1.base$V2) + 1.7, 
                         hjust = 0, size = 5,
                         label = str_glue("Mean = {round(mean(five_1.base$V2), 2)}")) +
@@ -107,13 +114,10 @@ ggMarginal(ggplot(data = five_1.base) +
                         hjust = 0, size = 5,
                         label = str_glue("SD = {round(sd(five_1.base$V1), 2)}")) +
                labs(title = 'A: Unconstained',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.2, r = 0.5') +
                scale_y_continuous(limits = c(-5, 15)) +
                scale_x_continuous(limits = c(-5, 15)) +
                theme(plot.caption = element_text(size = 14)))
-
-# Linear regression
-summary(lm(V2 ~ V1, data = five_1.base))
 ```
 
 ### Constrain values to 0-10 range
@@ -159,13 +163,10 @@ ggMarginal(ggplot(data = five_1) +
                         hjust = 0, size = 5,
                         label = str_glue("SD = {round(sd(five_1$V1), 2)}")) +
                labs(title = 'B: Constrained (0-10 range)',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.2, r = 0.5') +
                scale_y_continuous(limits = c(-5, 15)) +
                scale_x_continuous(limits = c(-5, 15)) +
                theme(plot.caption = element_text(size = 14)))
-  
-# Linear regression
-summary(lm(V2 ~ V1, data = five_1))
 ```
 
 ## Model mean of V1 with increasing V1 thresholds from 0 to 5 
@@ -181,9 +182,12 @@ cutoff <- 0:5
 five_1V1.shift <- sapply(cutoff, function(x){mean(five_1V1[five_1V1 > x])})
 
 # Calculate deviation 
-(five_1V1.df <- data.frame(cutoff = cutoff,
-                          mean = five_1V1.shift) %>% 
-        mutate(deviation = mean - mean(five_1V1)))
+(five_1V1.df <- data.frame(time = 'V1',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff - 0.15,
+                           mean = five_1V1.shift) %>% 
+        mutate(deviation = mean - mean(five_1V1),
+               time = as.character(time)))
 
 # Plot data
 ggplot(data = five_1V1.df) +
@@ -196,7 +200,7 @@ ggplot(data = five_1V1.df) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
     labs(title = 'A: Shift in V1 mean with increasing V1 threshold value',
-         caption = 'Parameters: Mean = 5.2, SD = 1.2, Cor = 0.5',
+         caption = 'Parameters: Mean = 5.2, SD = 1.2, r = 0.5',
          x = 'Baseline pain intensity threshold',
          y = 'Mean score (0-10 rating scale)') +
     theme(plot.caption = element_text(size = 14))
@@ -218,10 +222,13 @@ five_1V2.shift <- map_dbl(.x = cutoff,
                               .$V2 %>% 
                               mean(.))
 
-# Calculate deviation
-(five_1V2.df <- data.frame(cutoff = cutoff,
+# Calculate deviation 
+(five_1V2.df <- data.frame(time = 'V2',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff + 0.15,
                            mean = five_1V2.shift) %>% 
-        mutate(deviation = mean - mean(five_1V2)))
+        mutate(deviation = mean - mean(five_1V1),
+               time = as.character(time)))
 
 # Plot data
 ggplot(data = five_1V2.df) +
@@ -234,7 +241,7 @@ ggplot(data = five_1V2.df) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
     labs(title = 'B: Shift in V2 mean with increasing V1 threshold value',
-         caption = 'Parameters: Mean = 5.2, SD = 1.2, Cor = 0.5',
+         caption = 'Parameters: Mean = 5.2, SD = 1.2, r = 0.5',
          x = 'Baseline pain intensity threshold',
          y = 'Mean score (0-10 rating scale)') +
     theme(plot.caption = element_text(size = 14))
@@ -271,8 +278,8 @@ ggMarginal(placebo_1.0[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_1,
                           colour = '#999999',
                           size = 1) +
@@ -295,7 +302,7 @@ ggMarginal(placebo_1.0[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'A: Baseline pain threshold = 0',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.2, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15),
                      plot.caption = element_text(size = 14)),
@@ -332,8 +339,8 @@ ggMarginal(placebo_1.3[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_1,
                           colour = '#999999',
                           size = 1) +
@@ -356,7 +363,7 @@ ggMarginal(placebo_1.3[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'B: Baseline pain threshold = 3',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.2, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15), 
                      plot.caption = element_text(size = 14)),
@@ -396,8 +403,8 @@ ggMarginal(placebo_1.4[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_1,
                           colour = '#999999',
                           size = 1) +
@@ -420,7 +427,7 @@ ggMarginal(placebo_1.4[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'C: Baseline pain threshold = 4',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.2, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15),
                      plot.caption = element_text(size = 14)),
@@ -460,8 +467,8 @@ ggMarginal(placebo_1.5[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_1,
                           colour = '#999999',
                           size = 1) +
@@ -484,7 +491,7 @@ ggMarginal(placebo_1.5[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'D: Baseline pain threshold = 5',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.2, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15),
                      plot.caption = element_text(size = 14)),
@@ -492,9 +499,32 @@ ggMarginal(placebo_1.5[, 1:3] %>%
            groupFill = TRUE)
 ```
 
-## Difference plot
+## Publication plots
 
 ```{r one_plot0}
+# Plot 1
+shift_1 <- five_1V1.df %>% 
+  bind_rows(five_1V2.df) %>% 
+  ggplot(data = .) + 
+  aes(y = mean,
+      x = cutoff2,
+      fill= time) +
+  geom_hline(yintercept = 5.2,
+             linetype = 2) +
+  geom_point(shape = 21,
+             size = 8) +
+  labs(title = 'A',
+       subtitle = 'Parameters: Mean = 5.2, SD = 1.2, r = 0.5',
+       x = 'Baseline pain intensity threshold',
+       y = 'Mean pain score (0-10 rating scale)') +
+  scale_x_continuous(breaks = 0:5) +
+  scale_y_continuous(limits = c(2.5, 8.5)) +
+  scale_fill_manual(values = pal) +
+  theme(legend.title = element_blank(),
+        legend.position = c(0.12, 0.89),
+        legend.text = element_text(size = 20)); shift_1
+  
+# Plot 2
 # Bind diff_*.* dataframes
 diff_all_1 <- diff_1.0 %>% 
   bind_rows(diff_1.3, diff_1.4, diff_1.5)
@@ -513,7 +543,7 @@ pp_1 <- diff_all_1 %>%
              fill = pal[[1]],
              size = 8) +
   labs(title = 'A',
-       subtitle = 'Parameters: Mean = 5.2, SD = 1.2, Cor = 0.5',
+       subtitle = 'Parameters: Mean = 5.2, SD = 1.2, r = 0.5',
        x = 'Baseline pain intensity threshold',
        y = 'Mean difference (V1 - V2)') +
   scale_y_continuous(limits = c(-0.2, 1.8)); pp_1
@@ -521,7 +551,7 @@ pp_1 <- diff_all_1 %>%
 
 ----
 
-# Mean = 5.2, SD = 1.7, Cor = 0.5
+# Mean = 5.2, SD = 1.7, r = 0.5
 
 ## Generate and summarise data
 
@@ -548,7 +578,8 @@ ggMarginal(ggplot(data = five_2.base) +
                          alpha = 0,
                          linetype = 2) +
                annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
-                        label = str_glue("r = {round(cor(five_2.base$V1, five_2.base$V2), 2)}")) +
+                        label = str_glue("r = {round(cor(five_2.base$V1, 
+                                         five_2.base$V2), 2)}")) +
                annotate(geom = 'text', x = -5, y = mean(five_2.base$V2) + 1.7, 
                         hjust = 0, size = 5,
                         label = str_glue("Mean = {round(mean(five_2.base$V2), 2)}")) +
@@ -562,13 +593,10 @@ ggMarginal(ggplot(data = five_2.base) +
                         hjust = 0, size = 5,
                         label = str_glue("SD = {round(sd(five_2.base$V1), 2)}")) +
                labs(title = 'A: Unconstrained',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.7, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.7, r = 0.5') +
                scale_y_continuous(limits = c(-5, 15)) +
                scale_x_continuous(limits = c(-5, 15)) +
                theme(plot.caption = element_text(size = 14)))
-
-# Linear regression
-summary(lm(V2 ~ V1, data = five_2.base))
 ```
 
 ### Constrain values to 0-10 range
@@ -600,7 +628,8 @@ ggMarginal(ggplot(data = five_2) +
                          alpha = 0,
                          linetype = 2) +
                annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
-                        label = str_glue("r = {round(cor(five_2$V1, five_2$V2), 2)}")) +
+                        label = str_glue("r = {round(cor(five_2$V1, 
+                                         five_2$V2), 2)}")) +
                annotate(geom = 'text', x = -5, y = mean(five_2$V2) + 1.7, 
                         hjust = 0, size = 5,
                         label = str_glue("Mean = {round(mean(five_2$V2), 2)}")) +
@@ -614,13 +643,10 @@ ggMarginal(ggplot(data = five_2) +
                         hjust = 0, size = 5,
                         label = str_glue("SD = {round(sd(five_2$V1), 2)}")) +
                labs(title ='B: Constrained (0-10 range)',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.7, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.7, r = 0.5') +
                scale_y_continuous(limits = c(-5, 15)) +
                scale_x_continuous(limits = c(-5, 15)) +
                theme(plot.caption = element_text(size = 14)))
-
-# Linear regression
-summary(lm(V2 ~ V1, data = five_2))
 ```
 
 ## Model mean of V1 with increasing V1 thresholds from 0 to 5 
@@ -636,9 +662,12 @@ cutoff <- 0:5
 five_2V1.shift <- sapply(cutoff, function(x){mean(five_2V1[five_2V1 > x])})
 
 # Calculate deviation 
-(five_2V1.df <- data.frame(cutoff = cutoff,
+(five_2V1.df <- data.frame(time = 'V1',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff - 0.15,
                            mean = five_2V1.shift) %>% 
-        mutate(deviation = mean - mean(five_2V1)))
+        mutate(deviation = mean - mean(five_2V1),
+               time = as.character(time)))
 
 # Plot data
 ggplot(data = five_2V1.df) +
@@ -651,7 +680,7 @@ ggplot(data = five_2V1.df) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
     labs(title = 'A: Shift in V1 mean with increasing V1 threshold value',
-         caption = 'Parameters: Mean = 5.2, SD = 1.7, Cor = 0.5',
+         caption = 'Parameters: Mean = 5.2, SD = 1.7, r = 0.5',
          x = 'Baseline pain intensity threshold',
          y = 'Mean score (0-10 rating scale)') +
     theme(plot.caption = element_text(size = 14))
@@ -673,10 +702,13 @@ five_2V2.shift <- map_dbl(.x = cutoff,
                               .$V2 %>% 
                               mean(.))
 
-# Calculate deviation
-(five_2V2.df <- data.frame(cutoff = cutoff,
+# Calcaulate deviation
+(five_2V2.df <- data.frame(time = 'V2',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff + 0.15,
                            mean = five_2V2.shift) %>% 
-        mutate(deviation = mean - mean(five_2V2)))
+        mutate(deviation = mean - mean(five_2V1),
+               time = as.character(time)))
 
 # Plot data
 ggplot(data = five_2V2.df) +
@@ -689,7 +721,7 @@ ggplot(data = five_2V2.df) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
     labs(title = 'B: Shift in V2 mean with increasing V1 threshold value',
-         caption = 'Parameters: Mean = 5.2, SD = 1.7, Cor = 0.5',
+         caption = 'Parameters: Mean = 5.2, SD = 1.7, r = 0.5',
          x = 'Baseline pain intensity threshold',
          y = 'Mean score (0-10 rating scale)') +
     theme(plot.caption = element_text(size = 14))
@@ -726,8 +758,8 @@ ggMarginal(placebo_2.0[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_2,
                           colour = '#999999',
                           size = 1) +
@@ -750,7 +782,7 @@ ggMarginal(placebo_2.0[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'A: Baseline pain threshold = 0',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.7, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.7, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15),
                      plot.caption = element_text(size = 14)),
@@ -790,8 +822,8 @@ ggMarginal(placebo_2.3[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_2,
                           colour = '#999999',
                           size = 1) +
@@ -814,7 +846,7 @@ ggMarginal(placebo_2.3[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'B: Baseline pain threshold = 3',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.7, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.7, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15),
                      plot.caption = element_text(size = 14)),
@@ -854,8 +886,8 @@ ggMarginal(placebo_2.4[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_2,
                           colour = '#999999',
                           size = 1) +
@@ -878,7 +910,7 @@ ggMarginal(placebo_2.4[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'C: Baseline pain threshold = 4',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.7, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.7, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15),
                      plot.caption = element_text(size = 14)),
@@ -918,8 +950,8 @@ ggMarginal(placebo_2.5[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_2,
                           colour = '#999999',
                           size = 1) +
@@ -942,7 +974,7 @@ ggMarginal(placebo_2.5[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'D: Baseline pain threshold = 5',
-                    caption = 'Parameters: Mean = 5.2, SD = 1.7, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 1.7, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15),
                      plot.caption = element_text(size = 14)),
@@ -950,9 +982,32 @@ ggMarginal(placebo_2.5[, 1:3] %>%
            groupFill = TRUE)
 ```
 
-## Difference plot
+## Publication plots
 
 ```{r two_plot0}
+# Plot 1
+shift_2 <- five_2V1.df %>% 
+  bind_rows(five_2V2.df) %>% 
+  ggplot(data = .) + 
+  aes(y = mean,
+      x = cutoff2,
+      fill = time) +
+  geom_hline(yintercept = 5.2,
+             linetype = 2) +
+  geom_point(shape = 21,
+             size = 8) +
+  labs(title = 'B',
+       subtitle = 'Parameters: Mean = 5.2, SD = 1.7, r = 0.5',
+       x = 'Baseline pain intensity threshold',
+       y = 'Mean pain score (0-10 rating scale)') +
+  scale_x_continuous(breaks = 0:5) +
+  scale_y_continuous(limits = c(2.5, 8.5)) +
+  scale_fill_manual(values = pal) +
+  theme(legend.title = element_blank(),
+        legend.position = c(0.12, 0.89),
+        legend.text = element_text(size = 20)); shift_2
+  
+# Plot 2
 # Bind diff_*.* dataframes
 diff_all_2 <- diff_2.0 %>% 
   bind_rows(diff_2.3, diff_2.4, diff_2.5)
@@ -971,7 +1026,7 @@ pp_2 <- diff_all_2 %>%
              fill = pal[[1]],
              size = 8) +
   labs(title = 'B',
-       subtitle = 'Parameters: Mean = 5.2, SD = 1.7, Cor = 0.5',
+       subtitle = 'Parameters: Mean = 5.2, SD = 1.7, r = 0.5',
        x = 'Baseline pain intensity threshold',
        y = 'Mean difference (V1 - V2)') +
   scale_y_continuous(limits = c(-0.2, 1.8)); pp_2
@@ -979,7 +1034,7 @@ pp_2 <- diff_all_2 %>%
 
 ----
 
-# Mean = 5.2, SD = 2.2, Cor = 0.5
+# Mean = 5.2, SD = 2.2, r = 0.5
 
 ## Generate and summarise data
 
@@ -1007,7 +1062,8 @@ ggMarginal(ggplot(data = five_3.base) +
                          linetype = 2) +
                annotate(geom = 'text', x = -5, y = 15, 
                         hjust = 0, size = 5,
-                        label = str_glue("r = {round(cor(five_3.base$V1, five_3.base$V2), 2)}")) +
+                        label = str_glue("r = {round(cor(five_3.base$V1, 
+                                         five_3.base$V2), 2)}")) +
                annotate(geom = 'text', x = -5, y = mean(five_3.base$V2) + 1.7, 
                         hjust = 0, size = 5,
                         label = str_glue("Mean = {round(mean(five_3.base$V2), 2)}")) +
@@ -1021,13 +1077,10 @@ ggMarginal(ggplot(data = five_3.base) +
                         hjust = 0, size = 5,
                         label = str_glue("SD = {round(sd(five_3.base$V1), 2)}")) +
                labs(title = 'A: Unconstrained',
-                    caption = 'Parameters: Mean = 5.2, SD = 2.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 2.2, r = 0.5') +
                scale_y_continuous(limits = c(-5, 15)) +
                scale_x_continuous(limits = c(-5, 15)) +
                theme(plot.caption = element_text(size = 14)))
-
-# Linear regression
-summary(lm(V2 ~ V1, data = five_3.base))
 ```
 
 ### Constrain values to 0-10 range
@@ -1060,7 +1113,8 @@ ggMarginal(ggplot(data = five_3) +
                          linetype = 2) +
                annotate(geom = 'text', x = -5, y = 15, 
                         hjust = 0, size = 5,
-                        label = str_glue("r = {round(cor(five_3$V1, five_3$V2), 2)}")) +
+                        label = str_glue("r = {round(cor(five_3$V1, 
+                                         five_3$V2), 2)}")) +
                annotate(geom = 'text', x = -5, y = mean(five_3$V2) + 1.7, 
                         hjust = 0, size = 5,
                         label = str_glue("Mean = {round(mean(five_3$V2), 2)}")) +
@@ -1074,13 +1128,10 @@ ggMarginal(ggplot(data = five_3) +
                         hjust = 0, size = 5,
                         label = str_glue("SD = {round(sd(five_3$V1), 2)}")) +
                labs(title = 'B: Constrained (0-10 range)',
-                    caption = 'Parameters: Mean = 5.2, SD = 2.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 2.2, r = 0.5') +
                scale_y_continuous(limits = c(-5, 15)) +
                scale_x_continuous(limits = c(-5, 15)) +
                theme(plot.caption = element_text(size = 14)))
-
-# Linear regression
-summary(lm(V2 ~ V1, data = five_3))
 ```
 
 ## Model mean of V1 with increasing V1 thresholds from 0 to 5 
@@ -1096,9 +1147,12 @@ cutoff <- 0:5
 five_3V1.shift <- sapply(cutoff, function(x){mean(five_3V1[five_3V1 > x])})
 
 # Calculate deviation 
-(five_3V1.df <- data.frame(cutoff = cutoff,
+(five_3V1.df <- data.frame(time = 'V1',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff - 0.15,
                            mean = five_3V1.shift) %>% 
-        mutate(deviation = mean - mean(five_3V1)))
+        mutate(deviation = mean - mean(five_3V1),
+               time = as.character(time)))
 
 # Plot data
 ggplot(data = five_3V1.df) +
@@ -1111,7 +1165,7 @@ ggplot(data = five_3V1.df) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
     labs(title = 'A: Shift in V1 mean with increasing V1 threshold value',
-         caption = 'Parameters: Mean = 5.2, SD = 2.2, Cor = 0.5',
+         caption = 'Parameters: Mean = 5.2, SD = 2.2, r = 0.5',
          x = 'Baseline pain intensity threshold',
          y = 'Mean score (0-10 rating scale)') +
     theme(plot.caption = element_text(size = 14))
@@ -1134,9 +1188,12 @@ five_3V2.shift <- map_dbl(.x = cutoff,
                               mean(.))
 
 # Calculate deviation
-(five_3V2.df <- data.frame(cutoff = cutoff,
+(five_3V2.df <- data.frame(time = 'V2',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff + 0.15,
                            mean = five_3V2.shift) %>% 
-        mutate(deviation = mean - mean(five_3V2)))
+        mutate(deviation = mean - mean(five_3V1),
+               time = as.character(time)))
 
 # Plot data
 ggplot(data = five_3V2.df) +
@@ -1149,7 +1206,7 @@ ggplot(data = five_3V2.df) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
     labs(title = 'B: Shift in V2 mean with increasing V1 threshold value',
-         caption = 'Parameters: Mean = 5.2, SD = 2.2, Cor = 0.5',
+         caption = 'Parameters: Mean = 5.2, SD = 2.2, r = 0.5',
          x = 'Baseline pain intensity threshold',
          y = 'Mean score (0-10 rating scale)') +
     theme(plot.caption = element_text(size = 14))
@@ -1186,8 +1243,8 @@ ggMarginal(placebo_3.0[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_3,
                           colour = '#999999',
                           size = 1) +
@@ -1210,7 +1267,7 @@ ggMarginal(placebo_3.0[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'A: Baseline pain threshold = 0',
-                    caption = 'Parameters: Mean = 5.2, SD = 2.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 2.2, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15),
                      plot.caption = element_text(size = 14)),
@@ -1250,8 +1307,8 @@ ggMarginal(placebo_3.3[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_3,
                           colour = '#999999',
                           size = 1) +
@@ -1274,7 +1331,7 @@ ggMarginal(placebo_3.3[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'B: Baseline pain threshold = 3',
-                    caption = 'Parameters: Mean = 5.2, SD = 2.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 2.2, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15),
                      plot.caption = element_text(size = 14)),
@@ -1314,8 +1371,8 @@ ggMarginal(placebo_3.4[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_3,
                           colour = '#999999',
                           size = 1) +
@@ -1338,7 +1395,7 @@ ggMarginal(placebo_3.4[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'C: Baseline pain threshold = 4',
-                    caption = 'Parameters: Mean = 5.2, SD = 2.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 2.2, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15),
                      plot.caption = element_text(size = 14)),
@@ -1378,8 +1435,8 @@ ggMarginal(placebo_3.5[, 1:3] %>%
                ggplot(data = .) +
                aes(x = V1, y = V2) +
                geom_point(aes(colour = group, fill = group),
-                          size = 1,
-                          key_glyph = draw_key_rect) +
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
                geom_point(data = five_3,
                           colour = '#999999',
                           size = 1) +
@@ -1402,7 +1459,7 @@ ggMarginal(placebo_3.5[, 1:3] %>%
                scale_fill_manual(values = pal) +
                scale_colour_manual(values = pal) +
                labs(title = 'D: Baseline pain threshold = 5',
-                    caption = 'Parameters: Mean = 5.2, SD = 2.2, Cor = 0.5') +
+                    caption = 'Parameters: Mean = 5.2, SD = 2.2, r = 0.5') +
                theme(legend.title = element_blank(),
                      legend.position = c(0.85, 0.15),
                      plot.caption = element_text(size = 14)),
@@ -1410,9 +1467,32 @@ ggMarginal(placebo_3.5[, 1:3] %>%
            groupFill = TRUE)
 ```
 
-## Difference plot
+## Publication plots
 
 ```{r three_plot0}
+# Plot 1
+shift_3 <- five_3V1.df %>% 
+  bind_rows(five_3V2.df) %>% 
+  ggplot(data = .) + 
+  aes(y = mean,
+      x = cutoff2,
+      fill = time) +
+  geom_hline(yintercept = 5.2,
+             linetype = 2) +
+  geom_point(shape = 21,
+             size = 8) +
+  labs(title = 'C',
+       subtitle = 'Parameters: Mean = 5.2, SD = 2.2, r = 0.5',
+       x = 'Baseline pain intensity threshold',
+       y = 'Mean pain score (0-10 rating scale)') +
+  scale_x_continuous(breaks = 0:5) +
+  scale_y_continuous(limits = c(2.5, 8.5)) +
+  scale_fill_manual(values = pal) +
+  theme(legend.title = element_blank(),
+        legend.position = c(0.12, 0.89),
+        legend.text = element_text(size = 20)); shift_3
+  
+# Plot 2
 # Bind diff_*.* dataframes
 diff_all_3 <- diff_3.0 %>% 
   bind_rows(diff_3.3, diff_3.4, diff_3.5)
@@ -1431,7 +1511,7 @@ pp_3 <- diff_all_3 %>%
              fill = pal[[1]],
              size = 8) +
   labs(title = 'C',
-       subtitle = 'Parameters: Mean = 5.2, SD = 2.2, Cor = 0.5',
+       subtitle = 'Parameters: Mean = 5.2, SD = 2.2, r = 0.5',
        x = 'Baseline pain intensity threshold',
        y = 'Mean difference (V1 - V2)') +
   scale_y_continuous(limits = c(-0.2, 1.8)); pp_3
@@ -1439,17 +1519,20 @@ pp_3 <- diff_all_3 %>%
 
 ----
 
-# Publication plot 
+# Publication composite plots 
 
 ```{r pub_plot}
+shift_4 <- shift_1 + shift_2 + shift_3
+ggsave('figures/5.2_0.5a.png', shift_4, width = 17, height = 7)
+
 pp_4 <- pp_1 + pp_2 + pp_3
-ggsave('figures/5.2_0.5.png', pp_4, width = 17, height = 7)
+ggsave('figures/5.2_0.5b.png', pp_4, width = 17, height = 7)
 ```
 
 ----
 
 # Session information 
 
-```{r}
+```{r session_info}
 sessionInfo()
 ```
