@@ -3,6 +3,7 @@ title: "Regression to the mean modeling"
 subtitle: "Mean pain rating of 5.2 at 0.2 correlation"
 author: "Peter Kamerman"
 date: "Last knitted: `r format(Sys.Date(), '%d %B %Y')`"
+geometry: margin=15mm
 ---
 
 ```{r include = FALSE}
@@ -50,7 +51,7 @@ opts_chunk$set(fig.height = 8,
 Generate a covariance matrix using an SD of 1.2, 1.7, and 2.2, and correlation of 0.2.
 
 ```{r cov_matrix}
-# Correlation matrices
+# Correlation matrix
 cor <- matrix(c(1, 0.2, 0.2, 1), ncol = 2)
 
 # SDs
@@ -99,7 +100,8 @@ ggMarginal(ggplot(data = five_1.base) +
                          alpha = 0,
                          linetype = 2) +
                annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
-                        label = str_glue("r = {round(cor(five_1.base$V1, five_1.base$V2), 2)}")) +
+                        label = str_glue("r = {round(cor(five_1.base$V1, 
+                                         five_1.base$V2), 2)}")) +
                annotate(geom = 'text', x = -5, y = mean(five_1.base$V2) + 1.7, 
                         hjust = 0, size = 5,
                         label = str_glue("Mean = {round(mean(five_1.base$V2), 2)}")) +
@@ -148,7 +150,8 @@ ggMarginal(ggplot(data = five_1) +
                          alpha = 0,
                          linetype = 2) +
                annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
-                        label = str_glue("r = {round(cor(five_1$V1, five_1$V2), 2)}")) +
+                        label = str_glue("r = {round(cor(five_1$V1, 
+                                         five_1$V2), 2)}")) +
                annotate(geom = 'text', x = -5, y = mean(five_1$V2) + 1.7, 
                         hjust = 0, size = 5,
                         label = str_glue("Mean = {round(mean(five_1$V2), 2)}")) +
@@ -576,7 +579,8 @@ ggMarginal(ggplot(data = five_2.base) +
                          alpha = 0,
                          linetype = 2) +
                annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
-                        label = str_glue("r = {round(cor(five_2.base$V1, five_2.base$V2), 2)}")) +
+                        label = str_glue("r = {round(cor(five_2.base$V1, 
+                                         five_2.base$V2), 2)}")) +
                annotate(geom = 'text', x = -5, y = mean(five_2.base$V2) + 1.7, 
                         hjust = 0, size = 5,
                         label = str_glue("Mean = {round(mean(five_2.base$V2), 2)}")) +
@@ -625,7 +629,8 @@ ggMarginal(ggplot(data = five_2) +
                          alpha = 0,
                          linetype = 2) +
                annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
-                        label = str_glue("r = {round(cor(five_2$V1, five_2$V2), 2)}")) +
+                        label = str_glue("r = {round(cor(five_2$V1, 
+                                         five_2$V2), 2)}")) +
                annotate(geom = 'text', x = -5, y = mean(five_2$V2) + 1.7, 
                         hjust = 0, size = 5,
                         label = str_glue("Mean = {round(mean(five_2$V2), 2)}")) +
@@ -1057,7 +1062,8 @@ ggMarginal(ggplot(data = five_3.base) +
                          linetype = 2) +
                annotate(geom = 'text', x = -5, y = 15, 
                         hjust = 0, size = 5,
-                        label = str_glue("r = {round(cor(five_3.base$V1, five_3.base$V2), 2)}")) +
+                        label = str_glue("r = {round(cor(five_3.base$V1, 
+                                         five_3.base$V2), 2)}")) +
                annotate(geom = 'text', x = -5, y = mean(five_3.base$V2) + 1.7, 
                         hjust = 0, size = 5,
                         label = str_glue("Mean = {round(mean(five_3.base$V2), 2)}")) +
@@ -1107,7 +1113,8 @@ ggMarginal(ggplot(data = five_3) +
                          linetype = 2) +
                annotate(geom = 'text', x = -5, y = 15, 
                         hjust = 0, size = 5,
-                        label = str_glue("r = {round(cor(five_3$V1, five_3$V2), 2)}")) +
+                        label = str_glue("r = {round(cor(five_3$V1, 
+                                         five_3$V2), 2)}")) +
                annotate(geom = 'text', x = -5, y = mean(five_3$V2) + 1.7, 
                         hjust = 0, size = 5,
                         label = str_glue("Mean = {round(mean(five_3$V2), 2)}")) +
@@ -1525,6 +1532,6 @@ ggsave('figures/5.2_0.2b.png', pp_4, width = 17, height = 7)
 
 # Session information 
 
-```{r}
+```{r session_info}
 sessionInfo()
 ```
