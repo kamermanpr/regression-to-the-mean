@@ -1,6 +1,6 @@
 ---
-title: "Supplement 2: Primary analysis 1A"
-subtitle: "Mean pain rating of 6.2 (SD 1.7) at 0.51, 0.37, 0.26 correlation"
+title: "Supplement 3: Primary analysis 1A"
+subtitle: "Mean pain rating of 6.2 (SD 1.7) at 0.26, 0.37, 0.51 correlation"
 author: "Peter Kamerman"
 date: "Last knitted: `r format(Sys.Date(), '%d %B %Y')`"
 geometry: margin=15mm
@@ -36,13 +36,13 @@ if(!dir.exists('figures')){
   dir.create('figures')  
 } 
 
-if(!dir.exists('figures/primary-analysis')){
-  dir.create('figures/primary-analysis')  
+if(!dir.exists('figures/supplement-3-primary-analysis-1A')){
+  dir.create('figures/supplement-3-primary-analysis-1A')  
 } 
 
 opts_chunk$set(fig.height = 8,
                fig.width = 8,
-               fig.path = 'figures/primary-analysis/')
+               fig.path = 'figures/supplement-3-primary-analysis-1A/')
 ```
 
 ----
@@ -51,15 +51,15 @@ opts_chunk$set(fig.height = 8,
 
 ## Overview
 
-The use of pain intensity cut-offs for study inclusion in clinical trials has two consequences. Firstly, the cut-off artificially raises the baseline mean pain score of the cohort being studied. Secondly, unless the correlation between two sequential measurements is 1, there should be a "flattening" of the relationship between the first and subsequent measurements. This "flattening" means that the cut-off has a disproportionate effect on the mean baseline pain intensity compared to subsequent measurements. 
+The use of pain intensity cut-offs for study inclusion in clinical trials has two consequences. Firstly, the cut-off artificially raises the baseline mean pain score of the cohort being studied compared to the population the cohort was sampled from. Secondly, unless the correlation between two sequential measurements is 1, there should be a "flattening" of the relationship between the first and subsequent measurements. This "flattening" means that the cut-off has a disproportionate effect on the mean baseline pain intensity compared to subsequent measurements. 
 
-This script demonstrates the effect of this "flattening" of the relationship between two sequential pain measurements in a hypothetical placebo group in a clinical trial for the management of neuropathic pain in the presence of various pain intensity cut-off values for trial inclusion. 
+This script demonstrates the effect of this "flattening" of the relationship between two sequential pain measurements in a hypothetical placebo group in a clinical trial for the management of pain in the presence of various pain intensity cut-off values for trial inclusion. 
 
 ## Modelling specifics 
 
 ### Data simulation parameters
 
-Baseline pain scores were extracted from papers listed in the supplementary materials of a systematic review of pharmacological treatments for neuropathic pain[^1] and that did not include baseline pain threshold inclusion criteria. Using this information, the pooled mean pain intensity at baseline was calculated to be 6.2 on an 11-point NRS, and the pooled SD in pain intensity at baseline was 1.7. The correlation between measurements 1 (V1) and 2 (V2) was set at 0.51 and 0.37 based on aggregated data across five clinical trials from 788 patients with rheumatoid arthritis for baseline vs week 4 and week 12 of the trial, respectively[^2], and 0.26 based on agreggated data across nine clinical trials from 2017 patients with knee or hip arthritis or chronic low back pain for baseline vs week 12 of the trial[^3]. 
+Baseline pain scores were extracted from papers listed in the supplementary materials of a systematic review of pharmacological treatments for neuropathic pain[^1] and that did not include baseline pain threshold inclusion criteria. Using this information, the pooled mean pain intensity at baseline was calculated to be 6.2 on an 11-point numerical pain rating scale (NRS), and the pooled SD of pain intensity at baseline was 1.7. The correlation between measurements 1 (V1) and 2 (V2) was set at 0.51 and 0.37 based on aggregated data across five clinical trials from 788 patients with rheumatoid arthritis for baseline vs week 4 and week 12 of the trial, respectively[^2], and 0.26 based on aggregated data across nine clinical trials from 2017 patients with knee or hip arthritis or chronic low back pain for baseline vs week 12 of the trial[^3]. 
 
 [^1]: Finnerup NB, Attal N, Haroutounian S, McNicol E, Baron R, Dworkin RH, Gilron I, Haanpää M, Hansson P, Jensen TS, Kamerman PR, Lund K, Moore A, Raja SN, Rice ASC, Rowbotham M, Sena E, Siddall P, Smith BH, Wallace M. Pharmacotherapy for neuropathic pain in adults: a systematic review and meta-analysis. Lancet Neurol 2015;14:162–173. doi:10.1016/S1474-4422(14)70251-0
 
@@ -69,17 +69,17 @@ Baseline pain scores were extracted from papers listed in the supplementary mate
 
 ### Data simulation and processing
 
-Covariance matrices were generated for each of the three combinations of correlation (_r_ = 0.26, 0.37, or 0.51) and the SD (1.7) using the `cor2cov` function from the `MBESS` package[^4]. Then, each of the three covariance matrices was used to generate random samples from a bivariate normal distribution (n = 1000 per sample) with means of 6.2. The samples were generated using the `mvrnorm` function from the `MASS` package[^5]. 
+Covariance matrices were generated for each of the three combinations of correlation (_r_ = 0.26, 0.37, or 0.51) and the SD (1.7) using the `cor2cov` function from the `MBESS` package[^4]. Then, each of the three covariance matrices was used to a generate random sample from a bivariate normal distribution (n = 1000 per sample) with a mean of 6.2. The samples were generated using the `mvrnorm` function from the `MASS` package[^5]. 
 
 [^4]: Kelley K. MBESS: The MBESS R package. 2019. Available: https://CRAN.R-project.org/package=MBESS
 
 [^5]: Venables WN, Ripley BD. Modern Applied Statistics with S. Fourth. New York: Springer, 2002. Available: http://www.stats.ox.ac.uk/pub/MASS4
 
-To check the data once they had been generated, measurement 1 (V1) and measurement 2 (V2) were plotted against each other using scatterplots with marginal density plots, and the sample means and SDs were calculated, as was the correlation between the two samples (_unconstrained data_). Thereafter, V1 values were constrained between 1 and 10 on an 11-point NRS to model participants entering a placebo-controlled clinical trial who can be expected to have at least some pain. In comparison, V2 values were unconstrained and could takje any value from 0 to 10 because pain intensity may be expected to drop to 0/10 on follow-up. To check for changes in centrality, spread, and correlation after constraining V1 data, the data were once again assessed using plots and numeric summaries. **Based on inspection of these plots and numeric summaries, it was deemed that constraining the lower tail of the V1 asamples had no major effect on the distributional and correlational structure of the data.** 
+To check the data once they had been generated, measurement 1 (V1) and measurement 2 (V2) were plotted against each other using scatterplots with marginal density plots, and the sample means and SDs were calculated, as was the correlation between the two samples (_unconstrained data_). Thereafter, V1 values were constrained between 1 and 10 on an 11-point NRS to model participants entering a placebo-controlled clinical trial who can be expected to have at least some pain. In comparison, V2 values were unconstrained and could take any value from 0 to 10 because pain intensity may take values across the full range of the scale on follow-up. To check for changes in centrality, spread, and correlation after constraining V1 data, the data were once again assessed using plots and numeric summaries. **Based on inspection of these plots and numeric summaries, it was deemed that constraining the lower tail of V1 had no major effect on the distribution and correlation structure of the data.** 
 
 ### Modelling the effect of baseline pain inclusion thresholds
 
-A baseline inclusion threshold of 0 on an 11-point NRS (i.e., no inclusion threshold) was used as a "control". In addition to the control threshold, three baseline pain intensity inclusion thresholds were selected based on the data listed in the supplementary materials of Finnerup and colleagues$^1$. The three thresholds were: pain intensity $\geq$ 4 (71% of listed studies), pain intensity $\geq$ 3 (12% of listed studies), and pain intensity $\geq$ 5 (11% of listed studies). Data from the three simulated datasets were each modelled under each of the four baseline pain intensity inclusion thresholds. 
+A baseline inclusion threshold of 0 on an 11-point NRS (i.e., no inclusion threshold) was used as a "control". In addition to the control threshold, three baseline pain intensity inclusion thresholds were selected based on the data listed in the supplementary materials of Finnerup and colleagues$^1$. The three thresholds were: pain intensity $\geq$ 4 (71% of listed studies), pain intensity $\geq$ 3 (12% of listed studies), and pain intensity $\geq$ 5 (11% of listed studies). Data from the three simulated datasets (mean = 6.2, SD = 1.7, correlation = 0.26, 0.37, 0.51) were each modelled under each of the four baseline pain intensity inclusion thresholds. 
 
 Modelling the effect of the thresholds involved removing all pairs of V1 and V2 data where V1 was less than the threshold value, yielding new datasets V1\* and V2\*. To assess the effect of removing data pairs on the group means, we calculated the difference in group means between V1 and V1\*, and V2 and V2\*. To assess the magnitude of the effect, we calculated the mean difference in pain intensity scores between V1* and V2* (point estimate), and generated bias-corrected and accelerated 95% bootstrapped confidence intervals of the difference (2000 resamples, generated using the `groupwiseMean` function from the `rcompanion` package[^6]). 
 
@@ -158,8 +158,10 @@ ggMarginal(ggplot(data = cor_026.base) +
                         label = str_glue("SD = {round(sd(cor_026.base$V1), 2)}")) +
                labs(title = 'A: Unconstained',
                     caption = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.26') +
-               scale_y_continuous(limits = c(-5, 15)) +
-               scale_x_continuous(limits = c(-5, 15)) +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
                theme(plot.caption = element_text(size = 14)))
 ```
 
@@ -208,8 +210,10 @@ ggMarginal(ggplot(data = cor_026) +
                         label = str_glue("SD = {round(sd(cor_026$V1), 2)}")) +
                labs(title = 'B: Constrained (0-10 range)',
                     caption = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.26') +
-               scale_y_continuous(limits = c(-5, 15)) +
-               scale_x_continuous(limits = c(-5, 15)) +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
                theme(plot.caption = element_text(size = 14)))
 ```
 
@@ -551,7 +555,7 @@ ggMarginal(placebo_1.5[, 1:3] %>%
 
 ```{r one_plot0}
 # Plot 1
-shift_1 <- cor_026V1.df %>% 
+shift_A <- cor_026V1.df %>% 
   bind_rows(cor_026V2.df) %>% 
   ggplot(data = .) + 
   aes(y = mean,
@@ -561,8 +565,7 @@ shift_1 <- cor_026V1.df %>%
              linetype = 2) +
   geom_point(shape = 21,
              size = 8) +
-  labs(title = 'A',
-       subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.26',
+  labs(subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.26',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean pain score (0-10 rating scale)') +
   scale_x_continuous(breaks = 0:5) +
@@ -570,14 +573,14 @@ shift_1 <- cor_026V1.df %>%
   scale_fill_manual(values = pal) +
   theme(legend.title = element_blank(),
         legend.position = c(0.12, 0.89),
-        legend.text = element_text(size = 20)); shift_1
+        legend.text = element_text(size = 20)); shift_A
   
 # Plot 2
 # Bind diff_*.* dataframes
 diff_all_1 <- diff_1.0 %>% 
   bind_rows(diff_1.3, diff_1.4, diff_1.5)
 
-pp_1 <- diff_all_1 %>% 
+diff_A <- diff_all_1 %>% 
   mutate(Threshold = factor(.id)) %>% 
   ggplot(data = .) +
   aes(x = Threshold,
@@ -590,11 +593,10 @@ pp_1 <- diff_all_1 %>%
   geom_point(shape = 21,
              fill = pal[[1]],
              size = 8) +
-  labs(title = 'A',
-       subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.26',
+  labs(subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.26',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference (V1 - V2)') +
-  scale_y_continuous(limits = c(-0.2, 1.8)); pp_1
+  scale_y_continuous(limits = c(-0.2, 1.8)); diff_A
 ```
 
 \newpage
@@ -642,8 +644,10 @@ ggMarginal(ggplot(data = cor_037.base) +
                         label = str_glue("SD = {round(sd(cor_037.base$V1), 2)}")) +
                labs(title = 'A: Unconstained',
                     caption = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.37') +
-               scale_y_continuous(limits = c(-5, 15)) +
-               scale_x_continuous(limits = c(-5, 15)) +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
                theme(plot.caption = element_text(size = 14)))
 ```
 
@@ -692,8 +696,10 @@ ggMarginal(ggplot(data = cor_037) +
                         label = str_glue("SD = {round(sd(cor_037$V1), 2)}")) +
                labs(title = 'B: Constrained (0-10 range)',
                     caption = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.37') +
-               scale_y_continuous(limits = c(-5, 15)) +
-               scale_x_continuous(limits = c(-5, 15)) +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
                theme(plot.caption = element_text(size = 14)))
 ```
 
@@ -1035,7 +1041,7 @@ ggMarginal(placebo_1.5[, 1:3] %>%
 
 ```{r two_plot0}
 # Plot 1
-shift_1 <- cor_037V1.df %>% 
+shift_B <- cor_037V1.df %>% 
   bind_rows(cor_037V2.df) %>% 
   ggplot(data = .) + 
   aes(y = mean,
@@ -1045,8 +1051,7 @@ shift_1 <- cor_037V1.df %>%
              linetype = 2) +
   geom_point(shape = 21,
              size = 8) +
-  labs(title = 'B',
-       subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.37',
+  labs(subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.37',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean pain score (0-10 rating scale)') +
   scale_x_continuous(breaks = 0:5) +
@@ -1054,14 +1059,14 @@ shift_1 <- cor_037V1.df %>%
   scale_fill_manual(values = pal) +
   theme(legend.title = element_blank(),
         legend.position = c(0.12, 0.89),
-        legend.text = element_text(size = 20)); shift_1
+        legend.text = element_text(size = 20)); shift_B
   
 # Plot 2
 # Bind diff_*.* dataframes
 diff_all_1 <- diff_1.0 %>% 
   bind_rows(diff_1.3, diff_1.4, diff_1.5)
 
-pp_1 <- diff_all_1 %>% 
+diff_B <- diff_all_1 %>% 
   mutate(Threshold = factor(.id)) %>% 
   ggplot(data = .) +
   aes(x = Threshold,
@@ -1074,11 +1079,10 @@ pp_1 <- diff_all_1 %>%
   geom_point(shape = 21,
              fill = pal[[1]],
              size = 8) +
-  labs(title = 'B',
-       subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.37',
+  labs(subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.37',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference (V1 - V2)') +
-  scale_y_continuous(limits = c(-0.2, 1.8)); pp_1
+  scale_y_continuous(limits = c(-0.2, 1.8)); diff_B
 ```
 
 \newpage
@@ -1126,8 +1130,10 @@ ggMarginal(ggplot(data = cor_051.base) +
                         label = str_glue("SD = {round(sd(cor_051.base$V1), 2)}")) +
                labs(title = 'A: Unconstained',
                     caption = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.51') +
-               scale_y_continuous(limits = c(-5, 15)) +
-               scale_x_continuous(limits = c(-5, 15)) +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
                theme(plot.caption = element_text(size = 14)))
 ```
 
@@ -1176,8 +1182,10 @@ ggMarginal(ggplot(data = cor_051) +
                         label = str_glue("SD = {round(sd(cor_051$V1), 2)}")) +
                labs(title = 'B: Constrained (0-10 range)',
                     caption = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.51') +
-               scale_y_continuous(limits = c(-5, 15)) +
-               scale_x_continuous(limits = c(-5, 15)) +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
                theme(plot.caption = element_text(size = 14)))
 ```
 
@@ -1519,7 +1527,7 @@ ggMarginal(placebo_1.5[, 1:3] %>%
 
 ```{r three_plot0}
 # Plot 1
-shift_1 <- cor_051V1.df %>% 
+shift_C <- cor_051V1.df %>% 
   bind_rows(cor_051V2.df) %>% 
   ggplot(data = .) + 
   aes(y = mean,
@@ -1529,8 +1537,7 @@ shift_1 <- cor_051V1.df %>%
              linetype = 2) +
   geom_point(shape = 21,
              size = 8) +
-  labs(title = 'C',
-       subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.51',
+  labs(subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.51',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean pain score (0-10 rating scale)') +
   scale_x_continuous(breaks = 0:5) +
@@ -1538,14 +1545,14 @@ shift_1 <- cor_051V1.df %>%
   scale_fill_manual(values = pal) +
   theme(legend.title = element_blank(),
         legend.position = c(0.12, 0.89),
-        legend.text = element_text(size = 20)); shift_1
+        legend.text = element_text(size = 20)); shift_C
   
 # Plot 2
 # Bind diff_*.* dataframes
 diff_all_1 <- diff_1.0 %>% 
   bind_rows(diff_1.3, diff_1.4, diff_1.5)
 
-pp_1 <- diff_all_1 %>% 
+diff_C <- diff_all_1 %>% 
   mutate(Threshold = factor(.id)) %>% 
   ggplot(data = .) +
   aes(x = Threshold,
@@ -1558,11 +1565,36 @@ pp_1 <- diff_all_1 %>%
   geom_point(shape = 21,
              fill = pal[[1]],
              size = 8) +
-  labs(title = 'C',
-       subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.51',
+  labs(subtitle = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.51',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference (V1 - V2)') +
-  scale_y_continuous(limits = c(-0.2, 1.8)); pp_1
+  scale_y_continuous(limits = c(-0.2, 1.8)); diff_C
+```
+
+\newpage
+
+# Publication plots
+
+Code only, outputs to file.
+
+```{r publication_plots}
+# Shifts
+shifts <- shift_A + shift_B + shift_C + 
+  plot_layout(ncol = 3)
+
+ggsave(filename = 'figures/figure_2_shift1A.png',
+       plot = shifts,
+       height = 7, 
+       width = 21)
+
+# Diffs
+diffs <- diff_A + diff_B + diff_C +
+  plot_layout(ncol = 3)
+
+ggsave(filename = 'figures/figure_2_diff1A.png',
+       plot = diffs,
+       height = 7, 
+       width = 21)
 ```
 
 ----
