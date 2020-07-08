@@ -791,24 +791,24 @@ ggplot(data = cor_037V2.df) +
 
 ```{r two_threshold0}
 # Process data
-placebo_1.0 <- cor_037 %>% 
+placebo_2.0 <- cor_037 %>% 
     filter(V1 >= 0) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
 
 # Calculate the mean (95%CI) difference between V1 and V2
-diff_1.0 <- groupwiseMean(difference ~ 1,
-                          data = placebo_1.0,
+diff_2.0 <- groupwiseMean(difference ~ 1,
+                          data = placebo_2.0,
                           R = 2000,
                           traditional = FALSE,
                           bca = TRUE) 
 
-diff_1.0$.id <- 0
+diff_2.0$.id <- 0
 
-kable(diff_1.0)
+kable(diff_2.0)
 
 # Plot the data
-ggMarginal(placebo_1.0[, 1:3] %>% 
+ggMarginal(placebo_2.0[, 1:3] %>% 
                bind_rows(cor_037) %>% 
                mutate(group = factor(group, 
                                      levels = c('No threshold', 'Threshold'),
@@ -821,17 +821,17 @@ ggMarginal(placebo_1.0[, 1:3] %>%
                geom_point(data = cor_037,
                           colour = '#999999',
                           size = 1) +
-               geom_point(data = placebo_1.0,
+               geom_point(data = placebo_2.0,
                           size = 1,
                           colour = '#000000') +
                geom_vline(xintercept = mean(cor_037$V1),
                           colour = pal[1], size = 1) +
-               geom_vline(xintercept = mean(placebo_1.0$V1),
+               geom_vline(xintercept = mean(placebo_2.0$V1),
                           colour = pal[2], size = 1) +
                geom_vline(xintercept = 0, linetype = 2) +
                geom_hline(yintercept = mean(cor_037$V2),
                           colour = pal[1], size = 1) +
-               geom_hline(yintercept = mean(placebo_1.0$V2),
+               geom_hline(yintercept = mean(placebo_2.0$V2),
                           colour = pal[2], size = 1) +
                scale_y_continuous(limits = c(0, 10),
                                   breaks = c(0, 2, 4, 6, 8, 10)) +
@@ -852,24 +852,24 @@ ggMarginal(placebo_1.0[, 1:3] %>%
 
 ```{r two_threshold3}
 # Process data
-placebo_1.3 <- cor_037 %>% 
+placebo_2.3 <- cor_037 %>% 
     filter(V1 >= 3) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
 
 # Calculate the mean (95%CI) difference between V1 and V2
-diff_1.3 <- groupwiseMean(difference ~ 1,
-                          data = placebo_1.3,
+diff_2.3 <- groupwiseMean(difference ~ 1,
+                          data = placebo_2.3,
                           R = 2000,
                           traditional = FALSE,
                           bca = TRUE) 
 
-diff_1.3$.id <- 3
+diff_2.3$.id <- 3
 
-kable(diff_1.3)
+kable(diff_2.3)
 
 # Plot the data
-ggMarginal(placebo_1.3[, 1:3] %>% 
+ggMarginal(placebo_2.3[, 1:3] %>% 
                bind_rows(cor_037) %>% 
                mutate(group = factor(group, 
                                      levels = c('No threshold', 'Threshold'),
@@ -882,17 +882,17 @@ ggMarginal(placebo_1.3[, 1:3] %>%
                geom_point(data = cor_037,
                           colour = '#999999',
                           size = 1) +
-               geom_point(data = placebo_1.3,
+               geom_point(data = placebo_2.3,
                           size = 1,
                           colour = '#000000') +
                geom_vline(xintercept = mean(cor_037$V1),
                           colour = pal[1], size = 1) +
-               geom_vline(xintercept = mean(placebo_1.3$V1),
+               geom_vline(xintercept = mean(placebo_2.3$V1),
                           colour = pal[2], size = 1) +
                geom_vline(xintercept = 3, linetype = 2) +
                geom_hline(yintercept = mean(cor_037$V2),
                           colour = pal[1], size = 1) +
-               geom_hline(yintercept = mean(placebo_1.3$V2),
+               geom_hline(yintercept = mean(placebo_2.3$V2),
                           colour = pal[2], size = 1) +
                scale_y_continuous(limits = c(0, 10),
                                   breaks = c(0, 2, 4, 6, 8, 10)) +
@@ -913,7 +913,7 @@ ggMarginal(placebo_1.3[, 1:3] %>%
 
 ```{r two_threshold4}
 # Process that data
-placebo_1.4 <- cor_037 %>% 
+placebo_2.4 <- cor_037 %>% 
     filter(V1 >= 4) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
@@ -922,18 +922,18 @@ placebo_1.4 <- cor_037 %>%
 set.seed(2019)
 
 # Calculate the mean (95%CI) difference between V1 and V2
-diff_1.4 <- groupwiseMean(difference ~ 1,
-                          data = placebo_1.4,
+diff_2.4 <- groupwiseMean(difference ~ 1,
+                          data = placebo_2.4,
                           R = 2000,
                           traditional = FALSE,
                           bca = TRUE) 
 
-diff_1.4$.id <- 4
+diff_2.4$.id <- 4
 
-kable(diff_1.4)
+kable(diff_2.4)
 
 # Plot the data
-ggMarginal(placebo_1.4[, 1:3] %>% 
+ggMarginal(placebo_2.4[, 1:3] %>% 
                bind_rows(cor_037) %>% 
                mutate(group = factor(group, 
                                      levels = c('No threshold', 'Threshold'),
@@ -946,17 +946,17 @@ ggMarginal(placebo_1.4[, 1:3] %>%
                geom_point(data = cor_037,
                           colour = '#999999',
                           size = 1) +
-               geom_point(data = placebo_1.4,
+               geom_point(data = placebo_2.4,
                           size = 1,
                           colour = '#000000') +
                geom_vline(xintercept = mean(cor_037$V1),
                           colour = pal[1], size = 1) +
-               geom_vline(xintercept = mean(placebo_1.4$V1),
+               geom_vline(xintercept = mean(placebo_2.4$V1),
                           colour = pal[2], size = 1) +
                geom_vline(xintercept = 4, linetype = 2) +
                geom_hline(yintercept = mean(cor_037$V2),
                           colour = pal[1], size = 1) +
-               geom_hline(yintercept = mean(placebo_1.4$V2),
+               geom_hline(yintercept = mean(placebo_2.4$V2),
                           colour = pal[2], size = 1) +
                scale_y_continuous(limits = c(0, 10),
                                   breaks = c(0, 2, 4, 6, 8, 10)) +
@@ -977,7 +977,7 @@ ggMarginal(placebo_1.4[, 1:3] %>%
 
 ```{r two_threshold5}
 # Process that data 
-placebo_1.5 <- cor_037 %>% 
+placebo_2.5 <- cor_037 %>% 
     filter(V1 >= 5) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
@@ -986,18 +986,18 @@ placebo_1.5 <- cor_037 %>%
 set.seed(2019)
 
 # Calculate the mean (95%CI) difference between V1 and V2
-diff_1.5 <- groupwiseMean(difference ~ 1,
-                          data = placebo_1.5,
+diff_2.5 <- groupwiseMean(difference ~ 1,
+                          data = placebo_2.5,
                           R = 2000,
                           traditional = FALSE,
                           bca = TRUE) 
 
-diff_1.5$.id <- 5
+diff_2.5$.id <- 5
 
-kable(diff_1.5)
+kable(diff_2.5)
 
 # Plot the data
-ggMarginal(placebo_1.5[, 1:3] %>% 
+ggMarginal(placebo_2.5[, 1:3] %>% 
                bind_rows(cor_037) %>% 
                mutate(group = factor(group, 
                                      levels = c('No threshold', 'Threshold'),
@@ -1010,17 +1010,17 @@ ggMarginal(placebo_1.5[, 1:3] %>%
                geom_point(data = cor_037,
                           colour = '#999999',
                           size = 1) +
-               geom_point(data = placebo_1.5,
+               geom_point(data = placebo_2.5,
                           size = 1,
                           colour = '#000000') +
                geom_vline(xintercept = mean(cor_037$V1),
                           colour = pal[1], size = 1) +
-               geom_vline(xintercept = mean(placebo_1.5$V1),
+               geom_vline(xintercept = mean(placebo_2.5$V1),
                           colour = pal[2], size = 1) +
                geom_vline(xintercept = 5, linetype = 2) +
                geom_hline(yintercept = mean(cor_037$V2),
                           colour = pal[1], size = 1) +
-               geom_hline(yintercept = mean(placebo_1.5$V2),
+               geom_hline(yintercept = mean(placebo_2.5$V2),
                           colour = pal[2], size = 1) +
                scale_y_continuous(limits = c(0, 10),
                                   breaks = c(0, 2, 4, 6, 8, 10)) +
@@ -1063,8 +1063,8 @@ shift_B <- cor_037V1.df %>%
   
 # Plot 2
 # Bind diff_*.* dataframes
-diff_all_1 <- diff_1.0 %>% 
-  bind_rows(diff_1.3, diff_1.4, diff_1.5)
+diff_all_1 <- diff_2.0 %>% 
+  bind_rows(diff_2.3, diff_2.4, diff_2.5)
 
 diff_B <- diff_all_1 %>% 
   mutate(Threshold = factor(.id)) %>% 
@@ -1277,24 +1277,24 @@ ggplot(data = cor_051V2.df) +
 
 ```{r three_threshold0}
 # Process data
-placebo_1.0 <- cor_051 %>% 
+placebo_3.0 <- cor_051 %>% 
     filter(V1 >= 0) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
 
 # Calculate the mean (95%CI) difference between V1 and V2
-diff_1.0 <- groupwiseMean(difference ~ 1,
-                          data = placebo_1.0,
+diff_3.0 <- groupwiseMean(difference ~ 1,
+                          data = placebo_3.0,
                           R = 2000,
                           traditional = FALSE,
                           bca = TRUE) 
 
-diff_1.0$.id <- 0
+diff_3.0$.id <- 0
 
-kable(diff_1.0)
+kable(diff_3.0)
 
 # Plot the data
-ggMarginal(placebo_1.0[, 1:3] %>% 
+ggMarginal(placebo_3.0[, 1:3] %>% 
                bind_rows(cor_051) %>% 
                mutate(group = factor(group, 
                                      levels = c('No threshold', 'Threshold'),
@@ -1307,17 +1307,17 @@ ggMarginal(placebo_1.0[, 1:3] %>%
                geom_point(data = cor_051,
                           colour = '#999999',
                           size = 1) +
-               geom_point(data = placebo_1.0,
+               geom_point(data = placebo_3.0,
                           size = 1,
                           colour = '#000000') +
                geom_vline(xintercept = mean(cor_051$V1),
                           colour = pal[1], size = 1) +
-               geom_vline(xintercept = mean(placebo_1.0$V1),
+               geom_vline(xintercept = mean(placebo_3.0$V1),
                           colour = pal[2], size = 1) +
                geom_vline(xintercept = 0, linetype = 2) +
                geom_hline(yintercept = mean(cor_051$V2),
                           colour = pal[1], size = 1) +
-               geom_hline(yintercept = mean(placebo_1.0$V2),
+               geom_hline(yintercept = mean(placebo_3.0$V2),
                           colour = pal[2], size = 1) +
                scale_y_continuous(limits = c(0, 10),
                                   breaks = c(0, 2, 4, 6, 8, 10)) +
@@ -1338,24 +1338,24 @@ ggMarginal(placebo_1.0[, 1:3] %>%
 
 ```{r three_threshold3}
 # Process data
-placebo_1.3 <- cor_051 %>% 
+placebo_3.3 <- cor_051 %>% 
     filter(V1 >= 3) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
 
 # Calculate the mean (95%CI) difference between V1 and V2
-diff_1.3 <- groupwiseMean(difference ~ 1,
-                          data = placebo_1.3,
+diff_3.3 <- groupwiseMean(difference ~ 1,
+                          data = placebo_3.3,
                           R = 2000,
                           traditional = FALSE,
                           bca = TRUE) 
 
-diff_1.3$.id <- 3
+diff_3.3$.id <- 3
 
-kable(diff_1.3)
+kable(diff_3.3)
 
 # Plot the data
-ggMarginal(placebo_1.3[, 1:3] %>% 
+ggMarginal(placebo_3.3[, 1:3] %>% 
                bind_rows(cor_051) %>% 
                mutate(group = factor(group, 
                                      levels = c('No threshold', 'Threshold'),
@@ -1368,17 +1368,17 @@ ggMarginal(placebo_1.3[, 1:3] %>%
                geom_point(data = cor_051,
                           colour = '#999999',
                           size = 1) +
-               geom_point(data = placebo_1.3,
+               geom_point(data = placebo_3.3,
                           size = 1,
                           colour = '#000000') +
                geom_vline(xintercept = mean(cor_051$V1),
                           colour = pal[1], size = 1) +
-               geom_vline(xintercept = mean(placebo_1.3$V1),
+               geom_vline(xintercept = mean(placebo_3.3$V1),
                           colour = pal[2], size = 1) +
                geom_vline(xintercept = 3, linetype = 2) +
                geom_hline(yintercept = mean(cor_051$V2),
                           colour = pal[1], size = 1) +
-               geom_hline(yintercept = mean(placebo_1.3$V2),
+               geom_hline(yintercept = mean(placebo_3.3$V2),
                           colour = pal[2], size = 1) +
                scale_y_continuous(limits = c(0, 10),
                                   breaks = c(0, 2, 4, 6, 8, 10)) +
@@ -1399,7 +1399,7 @@ ggMarginal(placebo_1.3[, 1:3] %>%
 
 ```{r three_threshold4}
 # Process that data
-placebo_1.4 <- cor_051 %>% 
+placebo_3.4 <- cor_051 %>% 
     filter(V1 >= 4) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
@@ -1408,18 +1408,18 @@ placebo_1.4 <- cor_051 %>%
 set.seed(2019)
 
 # Calculate the mean (95%CI) difference between V1 and V2
-diff_1.4 <- groupwiseMean(difference ~ 1,
-                          data = placebo_1.4,
+diff_3.4 <- groupwiseMean(difference ~ 1,
+                          data = placebo_3.4,
                           R = 2000,
                           traditional = FALSE,
                           bca = TRUE) 
 
-diff_1.4$.id <- 4
+diff_3.4$.id <- 4
 
-kable(diff_1.4)
+kable(diff_3.4)
 
 # Plot the data
-ggMarginal(placebo_1.4[, 1:3] %>% 
+ggMarginal(placebo_3.4[, 1:3] %>% 
                bind_rows(cor_051) %>% 
                mutate(group = factor(group, 
                                      levels = c('No threshold', 'Threshold'),
@@ -1432,17 +1432,17 @@ ggMarginal(placebo_1.4[, 1:3] %>%
                geom_point(data = cor_051,
                           colour = '#999999',
                           size = 1) +
-               geom_point(data = placebo_1.4,
+               geom_point(data = placebo_3.4,
                           size = 1,
                           colour = '#000000') +
                geom_vline(xintercept = mean(cor_051$V1),
                           colour = pal[1], size = 1) +
-               geom_vline(xintercept = mean(placebo_1.4$V1),
+               geom_vline(xintercept = mean(placebo_3.4$V1),
                           colour = pal[2], size = 1) +
                geom_vline(xintercept = 4, linetype = 2) +
                geom_hline(yintercept = mean(cor_051$V2),
                           colour = pal[1], size = 1) +
-               geom_hline(yintercept = mean(placebo_1.4$V2),
+               geom_hline(yintercept = mean(placebo_3.4$V2),
                           colour = pal[2], size = 1) +
                scale_y_continuous(limits = c(0, 10),
                                   breaks = c(0, 2, 4, 6, 8, 10)) +
@@ -1463,7 +1463,7 @@ ggMarginal(placebo_1.4[, 1:3] %>%
 
 ```{r three_threshold5}
 # Process that data 
-placebo_1.5 <- cor_051 %>% 
+placebo_3.5 <- cor_051 %>% 
     filter(V1 >= 5) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
@@ -1472,18 +1472,18 @@ placebo_1.5 <- cor_051 %>%
 set.seed(2019)
 
 # Calculate the mean (95%CI) difference between V1 and V2
-diff_1.5 <- groupwiseMean(difference ~ 1,
-                          data = placebo_1.5,
+diff_3.5 <- groupwiseMean(difference ~ 1,
+                          data = placebo_3.5,
                           R = 2000,
                           traditional = FALSE,
                           bca = TRUE) 
 
-diff_1.5$.id <- 5
+diff_3.5$.id <- 5
 
-kable(diff_1.5)
+kable(diff_3.5)
 
 # Plot the data
-ggMarginal(placebo_1.5[, 1:3] %>% 
+ggMarginal(placebo_3.5[, 1:3] %>% 
                bind_rows(cor_051) %>% 
                mutate(group = factor(group, 
                                      levels = c('No threshold', 'Threshold'),
@@ -1496,17 +1496,17 @@ ggMarginal(placebo_1.5[, 1:3] %>%
                geom_point(data = cor_051,
                           colour = '#999999',
                           size = 1) +
-               geom_point(data = placebo_1.5,
+               geom_point(data = placebo_3.5,
                           size = 1,
                           colour = '#000000') +
                geom_vline(xintercept = mean(cor_051$V1),
                           colour = pal[1], size = 1) +
-               geom_vline(xintercept = mean(placebo_1.5$V1),
+               geom_vline(xintercept = mean(placebo_3.5$V1),
                           colour = pal[2], size = 1) +
                geom_vline(xintercept = 5, linetype = 2) +
                geom_hline(yintercept = mean(cor_051$V2),
                           colour = pal[1], size = 1) +
-               geom_hline(yintercept = mean(placebo_1.5$V2),
+               geom_hline(yintercept = mean(placebo_3.5$V2),
                           colour = pal[2], size = 1) +
                scale_y_continuous(limits = c(0, 10),
                                   breaks = c(0, 2, 4, 6, 8, 10)) +
@@ -1549,8 +1549,8 @@ shift_C <- cor_051V1.df %>%
   
 # Plot 2
 # Bind diff_*.* dataframes
-diff_all_1 <- diff_1.0 %>% 
-  bind_rows(diff_1.3, diff_1.4, diff_1.5)
+diff_all_1 <- diff_3.0 %>% 
+  bind_rows(diff_3.3, diff_3.4, diff_3.5)
 
 diff_C <- diff_all_1 %>% 
   mutate(Threshold = factor(.id)) %>% 
