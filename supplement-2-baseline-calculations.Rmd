@@ -9,6 +9,7 @@ date: "Last knitted: `r format(Sys.Date(), '%d %B %Y')`"
 # Load packages
 library(tidyverse)
 library(spatstat)
+library(boot)
 
 # Output options
 if(!dir.exists('figures')){
@@ -147,15 +148,39 @@ weighted.median(x = median$value,
 - Formula sourced from: https://www.ncbi.nlm.nih.gov/books/NBK56512/
 
 ```{r pooled_mean}
-# Process data
-mean <- data %>% 
-    filter(included_in_analysis == 'yes') %>% 
-    filter(mean_or_median == 'mean') %>% 
-    # Multiply mean by the sample size
-    mutate(mean_by_n = value * sample_size) 
+# Make bootstrap function
+pooled_mean <- function(d, i){
+    # Select data
+    data <- d[i, ]
+    
+    # Process data
+    mean <- data %>% 
+      # Get the required data
+      filter(included_in_analysis == 'yes') %>% 
+      filter(mean_or_median == 'mean')
+    
+    # Calculate preliminary values
+    mean <- mean %>% 
+      mutate(mean_by_n = value * sample_size)
+    
+    # Calculate pooled mean
+    sum(mean$mean_by_n) / sum(mean$sample_size)
+}
 
-# Pooled mean
-sum(mean$mean_by_n) / sum(mean$sample_size)
+# Perform bootstrap
+set.seed(2019)
+mean_pooled <- boot(data = data, 
+                    statistic = pooled_mean, 
+                    R = 999, 
+                    stype = 'i',
+                    parallel = 'multicore',
+                    ncpus = 4)
+
+# Pooled mean 
+mean_pooled$t0
+
+# Confidence interval of the pooled mean (percentile method)
+boot.ci(mean_pooled, type = 'perc')
 ```
 
 ----
@@ -165,22 +190,43 @@ sum(mean$mean_by_n) / sum(mean$sample_size)
 - Formula sourced from: https://www.ncbi.nlm.nih.gov/books/NBK56512/
 
 ```{r pooled_sd}
-# Process data
-sd <- data %>% 
-    filter(included_in_analysis == 'yes') %>% 
-    filter(mean_or_median == 'mean') %>% 
-    filter(!is.na(sd)) %>% 
-    # Square the SD
-    mutate(SD_squared = sd^2) %>% 
-    # Calculate sample size -1
-    mutate(n_minus_1 = sample_size - 1) %>% 
-    # Get the number of groups
-    mutate(k = length(unique(.$authors))) %>% 
-    # Calculate (n-1)SD^2
-    mutate(numerator = SD_squared * n_minus_1)
+# Make bootstrap function
+pooled_sd <- function(d, i){
+    # Select data
+    data <- d[i, ]
+    
+    # Process the data 
+    sd <- data %>% 
+      filter(included_in_analysis == 'yes') %>% 
+      filter(mean_or_median == 'mean') %>% 
+      filter(!is.na(sd)) %>% 
+      # Square the SD
+      mutate(SD_squared = sd^2) %>% 
+      # Calculate sample size -1
+      mutate(n_minus_1 = sample_size - 1) %>% 
+      # Get the number of groups
+      mutate(k = length(unique(.$authors))) %>% 
+      # Calculate (n-1)SD^2
+      mutate(numerator = SD_squared * n_minus_1)
+  
+    # Pooled SD
+    sqrt(sum(sd$numerator) / (sum(sd$sample_size) - sd$k[[1]]))
+}
 
-# Pooled SD
-sqrt(sum(sd$numerator) / (sum(sd$sample_size) - sd$k[[1]]))
+# Perform bootstrap
+set.seed(2019)
+sd_pooled <- boot(data = data, 
+                    statistic = pooled_sd, 
+                    R = 999, 
+                    stype = 'i',
+                    parallel = 'multicore',
+                    ncpus = 4)
+
+# Pooled mean 
+sd_pooled$t0
+
+# Confidence interval of the pooled mean (percentile method)
+boot.ci(sd_pooled, type = 'perc')
 ```
 
 ----
