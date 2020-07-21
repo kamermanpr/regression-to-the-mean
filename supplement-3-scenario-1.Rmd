@@ -1,6 +1,6 @@
 ---
 title: "Supplement 3: Scenario 1"
-subtitle: "Mean pain rating of 6.2 (SD 1.7) at 0.26, 0.37, and 0.51 inter-measurement correlation"
+subtitle: "Mean pain intensity of 6.2 (SD 1.7) at 0.26, 0.37, and 0.51 inter-measurement correlation"
 author: "Peter Kamerman"
 date: "Last knitted: `r format(Sys.Date(), '%d %B %Y')`"
 geometry: margin=15mm
@@ -209,7 +209,7 @@ ggMarginal(ggplot(data = cor_026) +
                annotate(geom = 'text', x = mean(cor_026$V1) + 0.2, y = -4.75, 
                         hjust = 0, size = 5,
                         label = str_glue("SD = {round(sd(cor_026$V1), 2)}")) +
-               labs(title = 'Senario 1A: Constrained',
+               labs(title = 'Scenario 1A: Constrained',
                     caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
                     x = 'V1*',
                     y = 'V2*') +
@@ -259,7 +259,7 @@ ggplot(data = cor_026V1.df) +
               nudge_y = 0.5, size = 5) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
-    labs(title = 'Scenario 1A: Shift in V1 mean pain rating',
+    labs(title = 'Scenario 1A: Shift in V1 mean pain intensity',
          caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
          x = 'Baseline pain intensity inclusion threshold',
          y = 'Mean pain intensity*') 
@@ -299,7 +299,7 @@ ggplot(data = cor_026V2.df) +
               nudge_y = 0.5, size = 5) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
-    labs(title = 'Senario 1A: Shift in V2 mean pain rating',
+    labs(title = 'Scenario 1A: Shift in V2 mean pain intensity',
          caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
          x = 'Baseline pain intensity inclusion threshold',
          y = 'Mean pain intensity*') 
@@ -577,7 +577,7 @@ shift_A <- cor_026V1.df %>%
              size = 8) +
   labs(title = 'Scenario 1A',
        x = 'Baseline pain intensity inclusion threshold',
-       y = 'Mean pain rating*',
+       y = 'Mean pain intensity*',
        caption = '*Pain rated on a 0 to 10 numerical pain rating scale') +
   scale_x_continuous(breaks = 0:5) +
   scale_y_continuous(limits = c(5, 10)) +
@@ -613,7 +613,7 @@ diff_A <- diff_all_1 %>%
 
 \newpage
 
-# Senario 1B: Inter-measurement correlation = 0.37
+# Scenario 1B: Inter-measurement correlation = 0.37
 
 ## Generate and summarise data
 
@@ -751,7 +751,7 @@ ggplot(data = cor_037V1.df) +
               nudge_y = 0.5, size = 5) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
-    labs(title = 'Scenario 1B: Shift in V1 mean',
+    labs(title = 'Scenario 1B: Shift in V1 mean pain intensity',
          caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
          x = 'Baseline pain intensity inclusion threshold',
          y = 'Mean pain intensity*') 
@@ -791,16 +791,10 @@ ggplot(data = cor_037V2.df) +
               nudge_y = 0.5, size = 5) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
-    labs(title = 'Scenariop 1B: Shift in V2 mean',
+    labs(title = 'Scenario 1B: Shift in V2 mean pain intensity',
          caption = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.37',
          x = 'Baseline pain intensity inclusion threshold',
          y = 'Mean pain intensity*')
-```
-
-## Sample size after contraining data
-
-```{r}
-nrow(cor_037)
 ```
 
 ## Distributional shifts caused by having a threshold
@@ -1073,10 +1067,10 @@ shift_B <- cor_037V1.df %>%
              linetype = 2) +
   geom_point(shape = 21,
              size = 8) +
-  labs(title = 'Senario 1B',
+  labs(title = 'Scenario 1B',
        caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
        x = 'Baseline pain intensity inclusion threshold',
-       y = 'Mean pain rating*') +
+       y = 'Mean pain intensity*') +
   scale_x_continuous(breaks = 0:5) +
   scale_y_continuous(limits = c(5, 10)) +
   scale_fill_manual(values = pal) +
@@ -1102,7 +1096,7 @@ diff_B <- diff_all_1 %>%
   geom_point(shape = 21,
              fill = pal[[1]],
              size = 8) +
-  labs(subtitle = 'Senario 1B',
+  labs(title = 'Scenario 1B',
        caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference (V1 - V2)*') +
@@ -1249,10 +1243,10 @@ ggplot(data = cor_051V1.df) +
               nudge_y = 0.5, size = 5) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
-    labs(title = 'Scenario 1C: Shift in V1 mean',
+    labs(title = 'Scenario 1C: Shift in V1 mean pain intensity',
          caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
          x = 'Baseline pain intensity inclusion threshold',
-         y = 'Mean pain rating*')
+         y = 'Mean pain intensity*')
 ```
 
 ### Model mean of V2 with increasing V1 thresholds from 0 to 5 
@@ -1289,11 +1283,10 @@ ggplot(data = cor_051V2.df) +
               nudge_y = 0.5, size = 5) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
-    labs(title = 'Scenario 1C: Shift in V2 mean',
+    labs(title = 'Scenario 1C: Shift in V2 mean pain intensity',
          caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
          x = 'Baseline pain intensity inclusion threshold',
-         y = 'Mean pain rating*') +
-    theme(plot.caption = element_text(size = 14))
+         y = 'Mean pain intensity*')
 ```
 
 ## Distributional shifts caused by having a threshold
@@ -1569,7 +1562,7 @@ shift_C <- cor_051V1.df %>%
   labs(title = 'Scenario 1C',
        caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
        x = 'Baseline pain intensity inclusion threshold',
-       y = 'Mean pain rating*') +
+       y = 'Mean pain intensity*') +
   scale_x_continuous(breaks = 0:5) +
   scale_y_continuous(limits = c(5, 10)) +
   scale_fill_manual(values = pal) +
