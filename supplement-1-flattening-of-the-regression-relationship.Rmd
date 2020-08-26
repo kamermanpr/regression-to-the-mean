@@ -49,7 +49,7 @@ This script demonstrates the "flattening" of the relationship between two sequen
 
 For the purposes of this simulation, I examined the relationship between the two measurements (V1 and V2) over a range of correlation values, namely: _r_ = 1.0, 0.8, 0.5, and 0.2. 
 
-Also, I constructed the models under two conditions: _constrained_ and _unconstrained_ pain intensity ratings. For the _unconstrained_ models I took the raw values obtained through sampling from a bivariate normal distribution. In the _constrained_ model, values from the unconstrained simulation were bounded to the range of the numerical pain rating scale (NRS), namely, 0 to 10. Specifically, in the case of measurement 1 (V1), values were constrained between 1 and 10 to model pain ratings of participants entering a placebo-controlled clinical trial, who may be expected to have at least some pain (minimum of 1/10 on an NRS) on study entry. In comparison, measurement 2 (V2) values were constrained between 0 and 10 because pain intensity could conceivably take on any value between 0 and 10 on an NRS during later measurements. 
+Also, I constructed the models under two conditions: _constrained_ and _unconstrained_ pain intensity ratings. For the _unconstrained_ models I took the raw values obtained through sampling from a bivariate normal distribution. Thereafter, values were filtered (_constrained_) such that the minimum V1 value was 1 and the minimum V2 value was 0 on an 11-point NRS, and the maximum V1 and V2 values were 10 on an 11-point NRS. The minimum value of V1 was set to 1 because volunteers eligible to enter a placebo-controlled clinical trial can be expected to have at least some pain. In comparison, V2 values were unconstrained and could take any value from 0 to 10 because pain intensity may take values across the full range of the scale on follow-up. Maximum pain rating were limited to values of 10, the upper limit of the rating scale. 
 
 For reproducibility, I set the random seed to _"2019"_ for all random sampling procedures.
 
@@ -118,6 +118,8 @@ ggplot(data = cor_10.base) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
              label = str_glue("r = {round(cor(cor_10.base$V1, 
                               cor_10.base$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 14, hjust = 0, size = 5,
+             label = str_glue("n = {round(nrow(cor_10.base))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_10.base$V2) + 1.7, 
              hjust = 0, size = 5,
              label = str_glue("Mean = {round(mean(cor_10.base$V2), 2)}")) +
@@ -148,14 +150,8 @@ Confint(lm(V2 ~ V1, data = cor_10.base))
 ```{r 10_constrained}
 # Constrain data
 cor_10.constrained <- cor_10.base %>%
-    mutate(V1 = case_when(
-               V1 < 1 ~ 1,
-               V1 > 10 ~ 10,
-               TRUE ~ V1)) %>% 
-    mutate(V2 = case_when(
-               V2 < 0 ~ 0,
-               V2 > 10 ~ 10,
-               TRUE ~ V2)) %>% 
+    filter(V1 >= 1 & V1 <= 10) %>% 
+    filter(V2 >= 0 & V2 <= 10) %>% 
     mutate(group = 'No threshold')
 
 # Plot constrained data
@@ -177,6 +173,8 @@ ggplot(data = cor_10.constrained) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
              label = str_glue("r = {round(cor(cor_10.constrained$V1, 
                                          cor_10.constrained$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 14, hjust = 0, size = 5,
+             label = str_glue("n = {round(nrow(cor_10.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_10.constrained$V2) + 1.7, 
              hjust = 0, size = 5,
              label = str_glue("Mean = {round(mean(cor_10.constrained$V2), 2)}")) +
@@ -234,6 +232,8 @@ ggplot(data = cor_08.base) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
              label = str_glue("r = {round(cor(cor_08.base$V1, 
                               cor_08.base$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 14, hjust = 0, size = 5,
+             label = str_glue("n = {round(nrow(cor_08.base))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_08.base$V2) + 1.7, 
              hjust = 0, size = 5,
              label = str_glue("Mean = {round(mean(cor_08.base$V2), 2)}")) +
@@ -264,14 +264,8 @@ Confint(lm(V2 ~ V1, data = cor_08.base))
 ```{r 08_constrained}
 # Constrain data
 cor_08.constrained <- cor_08.base %>%
-    mutate(V1 = case_when(
-               V1 < 1 ~ 1,
-               V1 > 10 ~ 10,
-               TRUE ~ V1)) %>% 
-    mutate(V2 = case_when(
-               V2 < 0 ~ 0,
-               V2 > 10 ~ 10,
-               TRUE ~ V2)) %>% 
+    filter(V1 >= 1 & V1 <= 10) %>% 
+    filter(V2 >= 0 & V2 <= 10) %>%
     mutate(group = 'No threshold')
 
 # Plot constrained data
@@ -293,6 +287,8 @@ ggplot(data = cor_08.constrained) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
              label = str_glue("r = {round(cor(cor_08.constrained$V1, 
                               cor_08.constrained$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 14, hjust = 0, size = 5,
+             label = str_glue("n = {round(nrow(cor_08.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_08.constrained$V2) + 1.7, 
              hjust = 0, size = 5,
              label = str_glue("Mean = {round(mean(cor_08.constrained$V2), 2)}")) +
@@ -350,6 +346,8 @@ ggplot(data = cor_05.base) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
              label = str_glue("r = {round(cor(cor_05.base$V1, 
                               cor_05.base$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 14, hjust = 0, size = 5,
+             label = str_glue("n = {round(nrow(cor_05.base))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_05.base$V2) + 1.7, 
              hjust = 0, size = 5,
              label = str_glue("Mean = {round(mean(cor_05.base$V2), 2)}")) +
@@ -380,14 +378,8 @@ Confint(lm(V2 ~ V1, data = cor_05.base))
 ```{r 05_constrained}
 # Constrain data
 cor_05.constrained <- cor_05.base %>%
-    mutate(V1 = case_when(
-               V1 < 1 ~ 1,
-               V1 > 10 ~ 10,
-               TRUE ~ V1)) %>% 
-    mutate(V2 = case_when(
-               V2 < 0 ~ 0,
-               V2 > 10 ~ 10,
-               TRUE ~ V2)) %>% 
+    filter(V1 >= 1 & V1 <= 10) %>% 
+    filter(V2 >= 0 & V2 <= 10) %>% 
     mutate(group = 'No threshold')
 
 # Plot constrained data
@@ -409,6 +401,8 @@ ggplot(data = cor_05.constrained) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
              label = str_glue("r = {round(cor(cor_05.constrained$V1, 
                               cor_05.constrained$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 14, hjust = 0, size = 5,
+             label = str_glue("n = {round(nrow(cor_05.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_05.constrained$V2) + 1.7, 
              hjust = 0, size = 5,
              label = str_glue("Mean = {round(mean(cor_05.constrained$V2), 2)}")) +
@@ -466,6 +460,8 @@ ggplot(data = cor_02.base) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
              label = str_glue("r = {round(cor(cor_02.base$V1, 
                               cor_02.base$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 14, hjust = 0, size = 5,
+             label = str_glue("n = {round(nrow(cor_02.base))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_02.base$V2) + 1.7, 
              hjust = 0, size = 5,
              label = str_glue("Mean = {round(mean(cor_02.base$V2), 2)}")) +
@@ -496,14 +492,8 @@ Confint(lm(V2 ~ V1, data = cor_02.base))
 ```{r 02_constrained}
 # Constrain data
 cor_02.constrained <- cor_02.base %>%
-    mutate(V1 = case_when(
-               V1 < 1 ~ 1,
-               V1 > 10 ~ 10,
-               TRUE ~ V1)) %>% 
-    mutate(V2 = case_when(
-               V2 < 0 ~ 0,
-               V2 > 10 ~ 10,
-               TRUE ~ V2)) %>% 
+    filter(V1 >= 1 & V1 <= 10) %>% 
+    filter(V2 >= 0 & V2 <= 10) %>% 
     mutate(group = 'No threshold')
 
 # Plot constrained data
@@ -525,6 +515,8 @@ ggplot(data = cor_02.constrained) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
              label = str_glue("r = {round(cor(cor_02.constrained$V1, 
                               cor_02.constrained$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 14, hjust = 0, size = 5,
+             label = str_glue("n = {round(nrow(cor_02.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_02.constrained$V2) + 1.7, 
              hjust = 0, size = 5,
              label = str_glue("Mean = {round(mean(cor_02.constrained$V2), 2)}")) +
@@ -577,6 +569,8 @@ plot_1 <- ggplot(data = cor_10.constrained) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 6,
              label = str_glue("r = {round(cor(cor_10.constrained$V1, 
                                          cor_10.constrained$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 13.7, hjust = 0, size = 6,
+             label = str_glue("n = {round(nrow(cor_10.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_10.constrained$V2) + 1.7, 
              hjust = 0, size = 4,
              label = str_glue("Mean = {round(mean(cor_10.constrained$V2), 2)}")) +
@@ -620,6 +614,8 @@ plot_2 <- ggplot(data = cor_08.constrained) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 6,
              label = str_glue("r = {round(cor(cor_08.constrained$V1, 
                               cor_08.constrained$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 13.7, hjust = 0, size = 6,
+             label = str_glue("n = {round(nrow(cor_08.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_08.constrained$V2) + 1.7, 
              hjust = 0, size = 4,
              label = str_glue("Mean = {round(mean(cor_08.constrained$V2), 2)}")) +
@@ -663,6 +659,8 @@ plot_3 <- ggplot(data = cor_05.constrained) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 6,
              label = str_glue("r = {round(cor(cor_05.constrained$V1, 
                               cor_05.constrained$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 13.7, hjust = 0, size = 6,
+             label = str_glue("n = {round(nrow(cor_05.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_05.constrained$V2) + 1.7, 
              hjust = 0, size = 4,
              label = str_glue("Mean = {round(mean(cor_05.constrained$V2), 2)}")) +
@@ -705,6 +703,8 @@ plot_4 <- ggplot(data = cor_02.constrained) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 6,
              label = str_glue("r = {round(cor(cor_02.constrained$V1, 
                               cor_02.constrained$V2), 2)}")) +
+    annotate(geom = 'text', x = -5, y = 13.7, hjust = 0, size = 6,
+             label = str_glue("n = {round(nrow(cor_02.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_02.constrained$V2) + 1.7, 
              hjust = 0, size = 4,
              label = str_glue("Mean = {round(mean(cor_02.constrained$V2), 2)}")) +
