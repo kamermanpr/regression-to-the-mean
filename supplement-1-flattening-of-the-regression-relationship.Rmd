@@ -567,10 +567,10 @@ plot_1 <- ggplot(data = cor_10.constrained) +
               alpha = 0,
               linetype = 2) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 6,
-             label = str_glue("r = {round(cor(cor_10.constrained$V1, 
+             label = str_glue("r* = {round(cor(cor_10.constrained$V1, 
                                          cor_10.constrained$V2), 2)}")) +
     annotate(geom = 'text', x = -5, y = 13.7, hjust = 0, size = 6,
-             label = str_glue("n = {round(nrow(cor_10.constrained))}")) +
+             label = str_glue("n* = {round(nrow(cor_10.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_10.constrained$V2) + 1.7, 
              hjust = 0, size = 4,
              label = str_glue("Mean = {round(mean(cor_10.constrained$V2), 2)}")) +
@@ -612,10 +612,10 @@ plot_2 <- ggplot(data = cor_08.constrained) +
               alpha = 0,
               linetype = 2) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 6,
-             label = str_glue("r = {round(cor(cor_08.constrained$V1, 
+             label = str_glue("r* = {round(cor(cor_08.constrained$V1, 
                               cor_08.constrained$V2), 2)}")) +
     annotate(geom = 'text', x = -5, y = 13.7, hjust = 0, size = 6,
-             label = str_glue("n = {round(nrow(cor_08.constrained))}")) +
+             label = str_glue("n* = {round(nrow(cor_08.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_08.constrained$V2) + 1.7, 
              hjust = 0, size = 4,
              label = str_glue("Mean = {round(mean(cor_08.constrained$V2), 2)}")) +
@@ -657,10 +657,10 @@ plot_3 <- ggplot(data = cor_05.constrained) +
               alpha = 0,
               linetype = 2) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 6,
-             label = str_glue("r = {round(cor(cor_05.constrained$V1, 
+             label = str_glue("r* = {round(cor(cor_05.constrained$V1, 
                               cor_05.constrained$V2), 2)}")) +
     annotate(geom = 'text', x = -5, y = 13.7, hjust = 0, size = 6,
-             label = str_glue("n = {round(nrow(cor_05.constrained))}")) +
+             label = str_glue("n* = {round(nrow(cor_05.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_05.constrained$V2) + 1.7, 
              hjust = 0, size = 4,
              label = str_glue("Mean = {round(mean(cor_05.constrained$V2), 2)}")) +
@@ -701,10 +701,10 @@ plot_4 <- ggplot(data = cor_02.constrained) +
               alpha = 0,
               linetype = 2) +
     annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 6,
-             label = str_glue("r = {round(cor(cor_02.constrained$V1, 
+             label = str_glue("r* = {round(cor(cor_02.constrained$V1, 
                               cor_02.constrained$V2), 2)}")) +
     annotate(geom = 'text', x = -5, y = 13.7, hjust = 0, size = 6,
-             label = str_glue("n = {round(nrow(cor_02.constrained))}")) +
+             label = str_glue("n* = {round(nrow(cor_02.constrained))}")) +
     annotate(geom = 'text', x = -5, y = mean(cor_02.constrained$V2) + 1.7, 
              hjust = 0, size = 4,
              label = str_glue("Mean = {round(mean(cor_02.constrained$V2), 2)}")) +
