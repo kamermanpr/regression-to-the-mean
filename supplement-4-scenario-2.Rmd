@@ -571,7 +571,7 @@ shift_A <- cor_026V1.df %>%
   aes(y = mean,
       x = cutoff2,
       fill= time) +
-  geom_hline(yintercept = 6.05,
+  geom_hline(yintercept = 6.1,
              linetype = 2) +
   geom_point(shape = 21,
              size = 8) +
@@ -1063,7 +1063,7 @@ shift_B <- cor_037V1.df %>%
   aes(y = mean,
       x = cutoff2,
       fill= time) +
-  geom_hline(yintercept = 6.0,
+  geom_hline(yintercept = 6.1,
              linetype = 2) +
   geom_point(shape = 21,
              size = 8) +
@@ -1562,7 +1562,7 @@ shift_C <- cor_051V1.df %>%
   labs(title = 'Scenario 2C',
        subtitle = 'Threshold 0: V1 = 6.1 (1.4), V2 = 6.1 (1.4), r = 0.49',
        x = 'Baseline pain intensity inclusion threshold',
-       y = 'Mean pain intensity*') +
+       y = 'Mean pain intensity') +
   scale_x_continuous(breaks = 0:5) +
   scale_y_continuous(limits = c(5, 10)) +
   scale_fill_manual(values = pal) +
@@ -1589,7 +1589,7 @@ diff_C <- diff_all_1 %>%
              fill = pal[[1]],
              size = 8) +
   labs(title = 'Scenario 2C',
-       caption = 'Threshold 0: V1 = 6.1 (1.4), V2 = 6.1 (1.4), r = 0.49',
+       subtitle = 'Threshold 0: V1 = 6.1 (1.4), V2 = 6.1 (1.4), r = 0.49',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference (V1 - V2)') +
   scale_y_continuous(limits = c(-0.2, 1.5)); diff_C
