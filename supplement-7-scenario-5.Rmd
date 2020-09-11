@@ -1,0 +1,1632 @@
+---
+title: "Supplement 7: Scenario 5"
+subtitle: "Mean pain intensity of 6.7 (SD 1.7) at 0.26, 0.37, and 0.51 inter-measurement correlation"
+author: "Peter Kamerman"
+date: "Last knitted: `r format(Sys.Date(), '%d %B %Y')`"
+geometry: margin=15mm
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include = FALSE}
+# Load packages
+library(tidyverse)
+library(magrittr)
+library(MASS)
+library(rcompanion)
+library(ggExtra)
+library(MBESS)
+library(knitr)
+library(patchwork)
+
+# Set ggplot theme
+theme_set(new = theme_bw(base_size = 20)) 
+theme_update(legend.text = element_text(size = 14),
+             axis.text = element_text(colour = '#000000',
+                                      size = 20),
+             axis.title = element_text(size = 20),
+             panel.grid = element_blank(),
+             plot.caption = element_text(size = 12),
+             plot.title = element_text(size = 20),
+             plot.subtitle = element_text(size = 16))
+
+# Palette
+pal <- c('#2678B2', '#FD7F28')
+
+# Output options
+if(!dir.exists('figures')){
+  dir.create('figures')  
+} 
+
+if(!dir.exists('figures/supplement-7-scenario-5')){
+  dir.create('figures/supplement-7-scenario-5')  
+} 
+
+opts_chunk$set(fig.height = 8,
+               fig.width = 8,
+               fig.path = 'figures/supplement-7-scenario-5/')
+```
+
+----
+
+# Introduction
+
+## Overview
+
+The use of pain intensity cut-offs for study inclusion in clinical trials has two consequences. Firstly, the cut-off artificially raises the baseline mean pain score of the cohort being studied compared to the population the cohort was sampled from. Secondly, unless the correlation between two sequential measurements is 1, there should be a "flattening" of the relationship between the first and subsequent measurements. This "flattening" means that the cut-off has a disproportionate effect on the mean baseline pain intensity compared to subsequent measurements. 
+
+This script demonstrates the effect of this "flattening" of the relationship between two sequential pain measurements in a hypothetical placebo group in a clinical trial for the management of pain in the presence of various pain intensity cut-off values for trial inclusion. 
+
+## Modelling specifics 
+
+### Data simulation parameters
+
+Baseline pain scores were extracted from papers listed in the supplementary materials of a systematic review of pharmacological treatments for neuropathic pain[^1] and that did not include baseline pain threshold inclusion criteria. Using this information, the upper bound of the 95% confidence interval of the pooled mean pain intensity at baseline was calculated to be 6.7 on an 11-point numerical pain rating scale (NRS), and the pooled SD of pain intensity at baseline was 1.7. The correlation between measurements 1 (V1) and 2 (V2) was set at 0.51 and 0.37 based on aggregated data across five clinical trials from 788 patients with rheumatoid arthritis for baseline vs week 4 and week 12 of the trial, respectively[^2], and 0.26 based on aggregated data across nine clinical trials from 2017 patients with knee or hip arthritis or chronic low back pain for baseline vs week 12 of the trial[^3]. 
+
+[^1]: Finnerup NB, Attal N, Haroutounian S, McNicol E, Baron R, Dworkin RH, Gilron I, Haanpää M, Hansson P, Jensen TS, Kamerman PR, Lund K, Moore A, Raja SN, Rice ASC, Rowbotham M, Sena E, Siddall P, Smith BH, Wallace M. Pharmacotherapy for neuropathic pain in adults: a systematic review and meta-analysis. Lancet Neurol 2015;14:162–173. doi:10.1016/S1474-4422(14)70251-0
+
+[^2]: Vollert J, Cook NR, Kaptchuk TJ, Sehra ST, Bowen EX, Yong F, Zhang L, Tobias DK, Hall KT. Favorable placebo responses in objective and subjective outcome measures in rheumatoid arthritis clinical trials – implications on new drug development. _[Unpublished data]_
+
+[^3]: Vase L, Vollert J, Finnerup NB, Miao X, Atkinson G, Marshall S, Nemeth R, Lange B, Liss C, Price DD, Maier C, Jensen TS, Segerdahl M. Predictors of the placebo analgesia response in randomized controlled trials of chronic pain: a meta-analysis of the individual data from nine industrially sponsored trials. Pain 2015;156:1795–1802. doi:10.1097/j.pain.0000000000000217.
+
+### Data simulation and processing
+
+Covariance matrices were generated for each of the three combinations of correlation (_r_ = 0.26, 0.37, or 0.51) and the SD (1.7) using the `cor2cov` function from the `MBESS` package[^4]. Then, each of the three covariance matrices was used to a generate random sample from a bivariate normal distribution (n = 1000 per sample) with a mean of 6.7. The samples were generated using the `mvrnorm` function from the `MASS` package[^5]. 
+
+[^4]: Kelley K. MBESS: The MBESS R package. 2019. Available: https://CRAN.R-project.org/package=MBESS
+
+[^5]: Venables WN, Ripley BD. Modern Applied Statistics with S. Fourth. New York: Springer, 2002. Available: http://www.stats.ox.ac.uk/pub/MASS4
+
+To check the data once they had been generated, measurement 1 (V1) and measurement 2 (V2) were plotted against each other using scatterplots with marginal density plots, and the sample means and SDs were calculated, as was the correlation between the two samples (_unconstrained data_). Thereafter, values were filtered (constrained) such that the minimum V1 value was 1 and the minimum V2 value was 0 on an 11-point NRS, and the maximum V1 and V2 values were 10 on an 11-point NRS. The minimum value of V1 was set to 1 because volunteers eligible to enter a placebo-controlled clinical trial can be expected to have at least some pain. In comparison, V2 values were unconstrained and could take any value from 0 to 10 because pain intensity may take values across the full range of the scale on follow-up. Maximum pain rating were limited to values of 10, the upper limit of the rating scale. To check for changes in centrality, spread, and correlation after filtering the data, the data were once again assessed using plots and numeric summaries. 
+
+### Modelling the effect of baseline pain inclusion thresholds
+
+A baseline inclusion threshold of 0 on an 11-point NRS (i.e., no inclusion threshold) was used as a "control". In addition to the control threshold, three baseline pain intensity inclusion thresholds were selected based on the data listed in the supplementary materials of Finnerup and colleagues$^1$. The three thresholds were: pain intensity $\geq$ 4 (71% of listed studies), pain intensity $\geq$ 3 (12% of listed studies), and pain intensity $\geq$ 5 (11% of listed studies). Data from the three simulated datasets (mean = 6.7, SD = 1.7, correlation = 0.26, 0.37, 0.51) were each modelled under each of the four baseline pain intensity inclusion thresholds. 
+
+Modelling the effect of the thresholds involved removing all pairs of V1 and V2 data where V1 was less than the threshold value, yielding new datasets V1\' and V2\'. To assess the effect of removing data pairs on the group means, we calculated the difference in group means between V1 and V1\', and V2 and V2\'. To assess the magnitude of the effect, we calculated the mean difference in pain intensity scores between V1\' and V2\' (point estimate), and generated bias-corrected and accelerated 95% bootstrapped confidence intervals of the difference (2000 resamples, generated using the `groupwiseMean` function from the `rcompanion` package[^6]). 
+
+[^6]: Mangiafico S. rcompanion: functions to support extension education program evaluation. 2018. Available: https://CRAN.R-project.org/package=rcompanion.
+
+For reproducibility, I set the random seed to _"2019"_ for all random sampling.
+
+Note: Because of random sampling the mean (SD) of the samples differ slightly from the population mean (SD).
+
+\newpage
+
+# Generate 2x2 covariance matrices 
+
+Generate a covariance matrix using an SD of 1.7 and correlation of:
+
+- _r_ = 0.26 (Scenario 5A)
+
+- _r_ = 0.37 (Scenario 5B)
+
+- _r_ = 0.51 (Scenario 5C)
+
+```{r cov_matrix}
+# Generate 2*2 correlation matrices
+cor_026 <- matrix(c(1, 0.26, 0.26, 1), ncol = 2)
+cor_037 <- matrix(c(1, 0.37, 0.37, 1), ncol = 2)
+cor_051 <- matrix(c(1, 0.51, 0.51, 1), ncol = 2)
+
+# Set the standard deviation
+std <- c(1.7, 1.7)
+
+# Generate a 2*2 covariance matrices
+cov_026 <- cor2cov(cor.mat = cor_026,
+                   sd = std)
+cov_037 <- cor2cov(cor.mat = cor_037,
+                   sd = std)
+cov_051 <- cor2cov(cor.mat = cor_051,
+                   sd = std)
+```
+
+\newpage
+
+# Scenario 5A: Inter-measurement correlation = 0.26
+
+## Generate and summarise data
+
+### Unconstrained data
+
+```{r one_base}
+# Set the random seed for reproducibility
+set.seed(2019)
+
+# Generate the data
+cor_026.base <- as.data.frame(mvrnorm(n = 1000, mu = c(6.7, 6.7), Sigma = cov_026))
+
+# Plot unconstrained data
+ggMarginal(ggplot(data = cor_026.base) +
+               aes(x = V1, y = V2) + 
+               geom_point() + 
+               geom_hline(yintercept = mean(cor_026.base$V2), 
+                          colour = 'red', size = 1) +
+               geom_vline(xintercept = mean(cor_026.base$V1), 
+                          colour = 'red', size = 1) +
+               geom_rect(ymin = 0, ymax = 10, 
+                         xmin = 0, xmax = 10, 
+                         colour = '#000000',
+                         alpha = 0,
+                         linetype = 2) +
+               annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
+                        label = str_glue("r = {round(cor(cor_026.base$V1, 
+                                         cor_026.base$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_026.base$V2) + 1.7, 
+                        hjust = 0, size = 5,
+                        label = str_glue("Mean = {round(mean(cor_026.base$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_026.base$V2) + 0.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_026.base$V2),2)}")) +
+               annotate(geom = 'text', x = mean(cor_026.base$V1) + 0.2, y = -3.8, 
+                        hjust = 0, size = 5,
+                        label = str_glue("Mean = {round(mean(cor_026.base$V1), 2)}")) +
+               annotate(geom = 'text', x = mean(cor_026.base$V1) + 0.2, y = -4.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_026.base$V1), 2)}")) +
+               labs(title = 'Scenario 5A: Unconstained',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)))
+```
+
+### Constrained data
+
+```{r one_constrained}
+# Constrain data
+cor_026 <- cor_026.base %>%
+    filter(V1 >= 1 & V1 <= 10) %>% 
+    filter(V2 >= 0 & V2 <= 10) %>% 
+    mutate(group = 'No threshold')
+
+# Plot constrained data
+ggMarginal(ggplot(data = cor_026) +
+               aes(x = V1, y = V2) + 
+               geom_point() + 
+               geom_hline(yintercept = mean(cor_026$V2), 
+                          colour = 'red', size = 1) +
+               geom_vline(xintercept = mean(cor_026$V1), 
+                          colour = 'red', size = 1) +
+               geom_rect(ymin = 0, ymax = 10, 
+                         xmin = 0, xmax = 10, 
+                         colour = '#000000',
+                         alpha = 0,
+                         linetype = 2) +
+               annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
+                        label = str_glue("r = {round(cor(cor_026$V1, 
+                                         cor_026$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_026$V2) + 1.7, 
+                        hjust = 0, size = 5,
+                        label = str_glue("Mean = {round(mean(cor_026$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_026$V2) + 0.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_026$V2),2)}")) +
+               annotate(geom = 'text', x = mean(cor_026$V1) + 0.2, y = -3.8, 
+                        hjust = 0, size = 5, 
+                        label = str_glue("Mean = {round(mean(cor_026$V1), 2)}")) +
+               annotate(geom = 'text', x = mean(cor_026$V1) + 0.2, y = -4.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_026$V1), 2)}")) +
+               labs(title = 'Scenario 5A: Constrained',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)))
+```
+
+## Sample size after contraining data
+
+```{r}
+nrow(cor_026)
+```
+
+## Effect of having a threshold on mean pain intensity scores
+
+**Constrained data only**
+
+### Model the mean of V1 with increasing pain inclusion thresholds from 0 to 5 
+
+```{r one_cutoffV1V1}
+# Extract visit 1 data 
+cor_026V1 <- cor_026$V1
+
+# Generate a vector of threshold values to iterate over
+cutoff <- 0:5
+
+# Generate a vector of V1 means at each V1 threshold
+cor_026V1.shift <- sapply(cutoff, function(x){mean(cor_026V1[cor_026V1 > x])})
+
+# Calculate deviation 
+(cor_026V1.df <- data.frame(time = 'V1',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff - 0.15, # Offset for plotting purposes 
+                           mean = cor_026V1.shift) %>% 
+        mutate(deviation = mean - mean(cor_026V1),
+               time = as.character(time)))
+
+# Plot data
+ggplot(data = cor_026V1.df) +
+    aes(x = cutoff, y = mean, ymin = mean(cor_026V1), ymax = mean) +
+    geom_ribbon(alpha = 0.6) +
+    geom_point(size = 5) +
+    geom_line(size = 1) +
+    geom_text(aes(label = round(mean, 2)), 
+              nudge_y = 0.5, size = 5) +
+    scale_y_continuous(limits = c(5, 10),
+                       breaks = c(0, 2, 4, 6, 8, 10)) +
+    labs(title = 'Scenario 5A: Shift in V1 mean pain intensity',
+         caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+         x = 'Baseline pain intensity inclusion threshold',
+         y = 'Mean pain intensity*') 
+```
+
+### Model mean of V2 with increasing inclusion thresholds from 0 to 5 
+
+```{r one_cutoffV1V2}
+# Extract visit 2 data 
+cor_026V2 <- cor_026$V2
+
+# Generate a vector of threshold values to iterate over
+cutoff <- 0:5
+
+# Generate a vector of V2 means at each V1 threshold
+cor_026V2.shift <- map_dbl(.x = cutoff,
+                          ~ cor_026 %>% 
+                              filter(V1 > .x) %>% 
+                              .$V2 %>% 
+                              mean(.))
+
+# Calculate deviation
+(cor_026V2.df <- data.frame(time = 'V2',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff + 0.15, # Offset for plotting purposes 
+                           mean = cor_026V2.shift) %>% 
+        mutate(deviation = mean - mean(cor_026V2),
+               time = as.character(time)))
+
+# Plot data
+ggplot(data = cor_026V2.df) +
+    aes(x = cutoff, y = mean, ymin = mean(cor_026V2), ymax = mean) +
+    geom_ribbon(alpha = 0.6) +
+    geom_point(size = 5) +
+    geom_line(size = 1) +
+    geom_text(aes(label = round(mean, 2)), 
+              nudge_y = 0.5, size = 5) +
+    scale_y_continuous(limits = c(5, 10),
+                       breaks = c(0, 2, 4, 6, 8, 10)) +
+    labs(title = 'Scenario 5A: Shift in V2 mean pain intensity',
+         caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+         x = 'Baseline pain intensity inclusion threshold',
+         y = 'Mean pain intensity*') 
+```
+
+## Distributional shifts caused by having a threshold
+
+### Threshold: 0
+
+```{r one_threshold0}
+# Process data
+placebo_1.0 <- cor_026 %>% 
+    filter(V1 >= 0) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_1.0 <- groupwiseMean(difference ~ 1,
+                          data = placebo_1.0,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_1.0$.id <- 0
+
+kable(diff_1.0)
+
+# Plot the data
+ggMarginal(placebo_1.0[, 1:3] %>% 
+               bind_rows(cor_026) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_026,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_1.0,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_026$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_1.0$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 0, linetype = 2) +
+               geom_hline(yintercept = mean(cor_026$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_1.0$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5A: Pain inclusion threshold = 0',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+### Threshold: 3
+
+```{r one_threshold3}
+# Process data
+placebo_1.3 <- cor_026 %>% 
+    filter(V1 >= 3) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_1.3 <- groupwiseMean(difference ~ 1,
+                          data = placebo_1.3,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_1.3$.id <- 3
+
+kable(diff_1.3)
+
+# Plot the data
+ggMarginal(placebo_1.3[, 1:3] %>% 
+               bind_rows(cor_026) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_026,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_1.3,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_026$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_1.3$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 3, linetype = 2) +
+               geom_hline(yintercept = mean(cor_026$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_1.3$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5A: Pain inclusion threshold = 3',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+### Threshold: 4
+
+```{r one_threshold4}
+# Process that data
+placebo_1.4 <- cor_026 %>% 
+    filter(V1 >= 4) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Set seed
+set.seed(2019)
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_1.4 <- groupwiseMean(difference ~ 1,
+                          data = placebo_1.4,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_1.4$.id <- 4
+
+kable(diff_1.4)
+
+# Plot the data
+ggMarginal(placebo_1.4[, 1:3] %>% 
+               bind_rows(cor_026) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_026,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_1.4,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_026$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_1.4$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 4, linetype = 2) +
+               geom_hline(yintercept = mean(cor_026$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_1.4$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5A: Pain inclusion threshold = 4',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+### Threshold: 5
+
+```{r one_threshold5}
+# Process that data 
+placebo_1.5 <- cor_026 %>% 
+    filter(V1 >= 5) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Set seed
+set.seed(2019)
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_1.5 <- groupwiseMean(difference ~ 1,
+                          data = placebo_1.5,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_1.5$.id <- 5
+
+kable(diff_1.5)
+
+# Plot the data
+ggMarginal(placebo_1.5[, 1:3] %>% 
+               bind_rows(cor_026) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_026,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_1.5,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_026$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_1.5$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 5, linetype = 2) +
+               geom_hline(yintercept = mean(cor_026$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_1.5$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5A: Pain inclusion threshold = 5',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+## Summary plots
+
+```{r one_plot0}
+# Plot 1
+shift_A <- cor_026V1.df %>% 
+  bind_rows(cor_026V2.df) %>% 
+  ggplot(data = .) + 
+  aes(y = mean,
+      x = cutoff2,
+      fill= time) +
+  geom_hline(yintercept = 6.5,
+             linetype = 2) +
+  geom_point(shape = 21,
+             size = 8) +
+  labs(title = 'Scenario 5A',
+       x = 'Baseline pain intensity inclusion threshold',
+       y = 'Mean pain intensity',
+       subtitle = 'Threshold 0: V1 = 6.5 (1.6), V2 = 6.5 (1.6), r = 0.2') +
+  scale_x_continuous(breaks = 0:5) +
+  scale_y_continuous(limits = c(5, 10)) +
+  scale_fill_manual(values = pal) +
+  theme(legend.title = element_blank(),
+        legend.position = c(0.88, 0.89),
+        legend.text = element_text(size = 20)); shift_A
+  
+# Plot 2
+# Bind diff_*.* dataframes
+diff_all_1 <- diff_1.0 %>% 
+  bind_rows(diff_1.3, diff_1.4, diff_1.5)
+
+diff_A <- diff_all_1 %>% 
+  mutate(Threshold = factor(.id)) %>% 
+  ggplot(data = .) +
+  aes(x = Threshold,
+      y = Mean,
+      ymin = Bca.lower,
+      ymax = Bca.upper) +
+  geom_hline(yintercept = 0, 
+             linetype = 2) +
+  geom_errorbar(width = 0.4) +
+  geom_point(shape = 21,
+             fill = pal[[1]],
+             size = 8) +
+  labs(title = 'Scenario 5A',
+       subtitle = 'Threshold 0: V1 = 6.5 (1.6), V2 = 6.5 (1.6), r = 0.2',
+       x = 'Baseline pain intensity inclusion threshold',
+       y = 'Mean difference (V1 - V2)') +
+  scale_y_continuous(limits = c(-0.2, 1.5)); diff_A
+```
+
+\newpage
+
+# Scenario 5B: Inter-measurement correlation = 0.37
+
+## Generate and summarise data
+
+### Unconstrained data
+
+```{r two_base}
+# Set the random seed for reproducibility
+set.seed(2019)
+
+# Generate the data
+cor_037.base <- as.data.frame(mvrnorm(n = 1000, mu = c(6.7, 6.7), Sigma = cov_037))
+
+# Plot unconstrained data
+ggMarginal(ggplot(data = cor_037.base) +
+               aes(x = V1, y = V2) + 
+               geom_point() + 
+               geom_hline(yintercept = mean(cor_037.base$V2), 
+                          colour = 'red', size = 1) +
+               geom_vline(xintercept = mean(cor_037.base$V1), 
+                          colour = 'red', size = 1) +
+               geom_rect(ymin = 0, ymax = 10, 
+                         xmin = 0, xmax = 10, 
+                         colour = '#000000',
+                         alpha = 0,
+                         linetype = 2) +
+               annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
+                        label = str_glue("r = {round(cor(cor_037.base$V1, 
+                                         cor_037.base$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_037.base$V2) + 1.7, 
+                        hjust = 0, size = 5,
+                        label = str_glue("Mean = {round(mean(cor_037.base$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_037.base$V2) + 0.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_037.base$V2),2)}")) +
+               annotate(geom = 'text', x = mean(cor_037.base$V1) + 0.2, y = -3.8, 
+                        hjust = 0, size = 5,
+                        label = str_glue("Mean = {round(mean(cor_037.base$V1), 2)}")) +
+               annotate(geom = 'text', x = mean(cor_037.base$V1) + 0.2, y = -4.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_037.base$V1), 2)}")) +
+               labs(title = 'Scenario 5B: Unconstained',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)))
+```
+
+### Constrained data
+
+```{r two_constrained}
+# Constrain data
+cor_037 <- cor_037.base %>%
+    filter(V1 >= 1 & V1 <= 10) %>% 
+    filter(V2 >= 0 & V2 <= 10) %>% 
+    mutate(group = 'No threshold')
+
+# Plot constrained data
+ggMarginal(ggplot(data = cor_037) +
+               aes(x = V1, y = V2) + 
+               geom_point() + 
+               geom_hline(yintercept = mean(cor_037$V2), 
+                          colour = 'red', size = 1) +
+               geom_vline(xintercept = mean(cor_037$V1), 
+                          colour = 'red', size = 1) +
+               geom_rect(ymin = 0, ymax = 10, 
+                         xmin = 0, xmax = 10, 
+                         colour = '#000000',
+                         alpha = 0,
+                         linetype = 2) +
+               annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
+                        label = str_glue("r = {round(cor(cor_037$V1, 
+                                         cor_037$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_037$V2) + 1.7, 
+                        hjust = 0, size = 5,
+                        label = str_glue("Mean = {round(mean(cor_037$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_037$V2) + 0.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_037$V2),2)}")) +
+               annotate(geom = 'text', x = mean(cor_037$V1) + 0.2, y = -3.8, 
+                        hjust = 0, size = 5, 
+                        label = str_glue("Mean = {round(mean(cor_037$V1), 2)}")) +
+               annotate(geom = 'text', x = mean(cor_037$V1) + 0.2, y = -4.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_037$V1), 2)}")) +
+               labs(title = 'Scenario 5B: Constrained',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)))
+```
+
+## Sample size after constraining data
+
+```{r}
+nrow(cor_037)
+```
+
+## Effect of having a threshold on mean pain intensity scores
+
+**Constrained data only**
+
+### Model mean of V1 with increasing pain inclusion thresholds from 0 to 5 
+
+```{r two_cutoffV1V1}
+# Extract visit 1 data 
+cor_037V1 <- cor_037$V1
+
+# Generate a vector of threshold values to iterate over
+cutoff <- 0:5
+
+# Generate a vector of V1 means at each V1 threshold
+cor_037V1.shift <- sapply(cutoff, function(x){mean(cor_037V1[cor_037V1 > x])})
+
+# Calculate deviation 
+(cor_037V1.df <- data.frame(time = 'V1',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff - 0.15, # Offset for plotting purposes
+                           mean = cor_037V1.shift) %>% 
+        mutate(deviation = mean - mean(cor_037V1),
+               time = as.character(time)))
+
+# Plot data
+ggplot(data = cor_037V1.df) +
+    aes(x = cutoff, y = mean, ymin = mean(cor_037V1), ymax = mean) +
+    geom_ribbon(alpha = 0.6) +
+    geom_point(size = 5) +
+    geom_line(size = 1) +
+    geom_text(aes(label = round(mean, 2)), 
+              nudge_y = 0.5, size = 5) +
+    scale_y_continuous(limits = c(5, 10),
+                       breaks = c(0, 2, 4, 6, 8, 10)) +
+    labs(title = 'Scenario 5B: Shift in V1 mean pain intensity',
+         caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+         x = 'Baseline pain intensity inclusion threshold',
+         y = 'Mean pain intensity*') 
+```
+
+### Model mean of V2 with increasing inclusion thresholds from 0 to 5 
+
+```{r two_cutoffV1V2}
+# Extract visit 2 data 
+cor_037V2 <- cor_037$V2
+
+# Generate a vector of threshold values to iterate over
+cutoff <- 0:5
+
+# Generate a vector of V2 means at each V1 threshold
+cor_037V2.shift <- map_dbl(.x = cutoff,
+                          ~ cor_037 %>% 
+                              filter(V1 > .x) %>% 
+                              .$V2 %>% 
+                              mean(.))
+
+# Calculate deviation
+(cor_037V2.df <- data.frame(time = 'V2',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff + 0.15, # Offset for plotting purposes
+                           mean = cor_037V2.shift) %>% 
+        mutate(deviation = mean - mean(cor_037V2),
+               time = as.character(time)))
+
+# Plot data
+ggplot(data = cor_037V2.df) +
+    aes(x = cutoff, y = mean, ymin = mean(cor_037V2), ymax = mean) +
+    geom_ribbon(alpha = 0.6) +
+    geom_point(size = 5) +
+    geom_line(size = 1) +
+    geom_text(aes(label = round(mean, 2)), 
+              nudge_y = 0.5, size = 5) +
+    scale_y_continuous(limits = c(5, 10),
+                       breaks = c(0, 2, 4, 6, 8, 10)) +
+    labs(title = 'Scenario 5B: Shift in V2 mean pain intensity',
+         caption = 'Population parameters: Mean = 6.7, SD = 1.7, r = 0.37',
+         x = 'Baseline pain intensity inclusion threshold',
+         y = 'Mean pain intensity*')
+```
+
+## Distributional shifts caused by having a threshold
+
+### Threshold: 0
+
+```{r two_threshold0}
+# Process data
+placebo_2.0 <- cor_037 %>% 
+    filter(V1 >= 0) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_2.0 <- groupwiseMean(difference ~ 1,
+                          data = placebo_2.0,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_2.0$.id <- 0
+
+kable(diff_2.0)
+
+# Plot the data
+ggMarginal(placebo_2.0[, 1:3] %>% 
+               bind_rows(cor_037) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_037,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_2.0,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_037$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_2.0$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 0, linetype = 2) +
+               geom_hline(yintercept = mean(cor_037$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_2.0$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5B: Pain inclusion threshold = 0',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+### Threshold: 3
+
+```{r two_threshold3}
+# Process data
+placebo_2.3 <- cor_037 %>% 
+    filter(V1 >= 3) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_2.3 <- groupwiseMean(difference ~ 1,
+                          data = placebo_2.3,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_2.3$.id <- 3
+
+kable(diff_2.3)
+
+# Plot the data
+ggMarginal(placebo_2.3[, 1:3] %>% 
+               bind_rows(cor_037) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_037,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_2.3,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_037$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_2.3$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 3, linetype = 2) +
+               geom_hline(yintercept = mean(cor_037$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_2.3$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5B: Pain inclusion threshold = 3',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+### Threshold: 4
+
+```{r two_threshold4}
+# Process that data
+placebo_2.4 <- cor_037 %>% 
+    filter(V1 >= 4) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Set seed
+set.seed(2019)
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_2.4 <- groupwiseMean(difference ~ 1,
+                          data = placebo_2.4,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_2.4$.id <- 4
+
+kable(diff_2.4)
+
+# Plot the data
+ggMarginal(placebo_2.4[, 1:3] %>% 
+               bind_rows(cor_037) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_037,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_2.4,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_037$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_2.4$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 4, linetype = 2) +
+               geom_hline(yintercept = mean(cor_037$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_2.4$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5B: Pain inclusion threshold = 4',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+### Threshold: 5
+
+```{r two_threshold5}
+# Process that data 
+placebo_2.5 <- cor_037 %>% 
+    filter(V1 >= 5) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Set seed
+set.seed(2019)
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_2.5 <- groupwiseMean(difference ~ 1,
+                          data = placebo_2.5,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_2.5$.id <- 5
+
+kable(diff_2.5)
+
+# Plot the data
+ggMarginal(placebo_2.5[, 1:3] %>% 
+               bind_rows(cor_037) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_037,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_2.5,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_037$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_2.5$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 5, linetype = 2) +
+               geom_hline(yintercept = mean(cor_037$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_2.5$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5B: Pain inclusion threshold = 5',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+## Summary plots
+
+```{r two_plot0}
+# Plot 1
+shift_B <- cor_037V1.df %>% 
+  bind_rows(cor_037V2.df) %>% 
+  ggplot(data = .) + 
+  aes(y = mean,
+      x = cutoff2,
+      fill= time) +
+  geom_hline(yintercept = 6.49,
+             linetype = 2) +
+  geom_point(shape = 21,
+             size = 8) +
+  labs(title = 'Scenario 5B',
+       subtitle = 'Threshold 0: V1 = 6.5 (1.6), V2 = 6.5 (1.6), r = 0.31',
+       x = 'Baseline pain intensity inclusion threshold',
+       y = 'Mean pain intensity') +
+  scale_x_continuous(breaks = 0:5) +
+  scale_y_continuous(limits = c(5, 10)) +
+  scale_fill_manual(values = pal) +
+  theme(legend.title = element_blank(),
+        legend.position = c(0.88, 0.89),
+        legend.text = element_text(size = 20)); shift_B
+  
+# Plot 2
+# Bind diff_*.* dataframes
+diff_all_1 <- diff_2.0 %>% 
+  bind_rows(diff_2.3, diff_2.4, diff_2.5)
+
+diff_B <- diff_all_1 %>% 
+  mutate(Threshold = factor(.id)) %>% 
+  ggplot(data = .) +
+  aes(x = Threshold,
+      y = Mean,
+      ymin = Bca.lower,
+      ymax = Bca.upper) +
+  geom_hline(yintercept = 0, 
+             linetype = 2) +
+  geom_errorbar(width = 0.4) +
+  geom_point(shape = 21,
+             fill = pal[[1]],
+             size = 8) +
+  labs(title = 'Scenario 5B',
+       subtitle = 'Threshold 0: V1 = 6.5 (1.6), V2 = 6.5 (1.6), r = 0.31',
+       x = 'Baseline pain intensity inclusion threshold',
+       y = 'Mean difference (V1 - V2)') +
+  scale_y_continuous(limits = c(-0.2, 1.5)); diff_B
+```
+
+\newpage
+
+# Scenario 5C: Inter-measurement correlation = 0.51
+
+## Generate and summarise data
+
+### Unconstrained data
+
+```{r three_base}
+# Set the random seed for reproducibility
+set.seed(2019)
+
+# Generate the data
+cor_051.base <- as.data.frame(mvrnorm(n = 1000, mu = c(6.7, 6.7), Sigma = cov_051))
+
+# Plot unconstrained data
+ggMarginal(ggplot(data = cor_051.base) +
+               aes(x = V1, y = V2) + 
+               geom_point() + 
+               geom_hline(yintercept = mean(cor_051.base$V2), 
+                          colour = 'red', size = 1) +
+               geom_vline(xintercept = mean(cor_051.base$V1), 
+                          colour = 'red', size = 1) +
+               geom_rect(ymin = 0, ymax = 10, 
+                         xmin = 0, xmax = 10, 
+                         colour = '#000000',
+                         alpha = 0,
+                         linetype = 2) +
+               annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
+                        label = str_glue("r = {round(cor(cor_051.base$V1, 
+                                         cor_051.base$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_051.base$V2) + 1.7, 
+                        hjust = 0, size = 5,
+                        label = str_glue("Mean = {round(mean(cor_051.base$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_051.base$V2) + 0.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_051.base$V2),2)}")) +
+               annotate(geom = 'text', x = mean(cor_051.base$V1) + 0.2, y = -3.8, 
+                        hjust = 0, size = 5,
+                        label = str_glue("Mean = {round(mean(cor_051.base$V1), 2)}")) +
+               annotate(geom = 'text', x = mean(cor_051.base$V1) + 0.2, y = -4.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_051.base$V1), 2)}")) +
+               labs(title = 'Scenario 5C: Unconstained',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)))
+```
+
+### Constrained data
+
+```{r three_constrained}
+# Constrain data
+cor_051 <- cor_051.base %>%
+    filter(V1 >= 1 & V1 <= 10) %>% 
+    filter(V2 >= 0 & V2 <= 10) %>% 
+    mutate(group = 'No threshold')
+
+# Plot constrained data
+ggMarginal(ggplot(data = cor_051) +
+               aes(x = V1, y = V2) + 
+               geom_point() + 
+               geom_hline(yintercept = mean(cor_051$V2), 
+                          colour = 'red', size = 1) +
+               geom_vline(xintercept = mean(cor_051$V1), 
+                          colour = 'red', size = 1) +
+               geom_rect(ymin = 0, ymax = 10, 
+                         xmin = 0, xmax = 10, 
+                         colour = '#000000',
+                         alpha = 0,
+                         linetype = 2) +
+               annotate(geom = 'text', x = -5, y = 15, hjust = 0, size = 5,
+                        label = str_glue("r = {round(cor(cor_051$V1, 
+                                         cor_051$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_051$V2) + 1.7, 
+                        hjust = 0, size = 5,
+                        label = str_glue("Mean = {round(mean(cor_051$V2), 2)}")) +
+               annotate(geom = 'text', x = -5, y = mean(cor_051$V2) + 0.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_051$V2),2)}")) +
+               annotate(geom = 'text', x = mean(cor_051$V1) + 0.2, y = -3.8, 
+                        hjust = 0, size = 5, 
+                        label = str_glue("Mean = {round(mean(cor_051$V1), 2)}")) +
+               annotate(geom = 'text', x = mean(cor_051$V1) + 0.2, y = -4.75, 
+                        hjust = 0, size = 5,
+                        label = str_glue("SD = {round(sd(cor_051$V1), 2)}")) +
+               labs(title = 'Scenario 5C: Constrained',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               scale_y_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)) +
+               scale_x_continuous(limits = c(-5, 15),
+                                  breaks = c(0, 5, 10)))
+```
+
+## Sample size after contraining data
+
+```{r}
+nrow(cor_051)
+```
+
+## Effect of having a threshold on mean pain intensity scores
+
+**Constrained data only**
+
+### Model mean of V1 with increasing pain inclusion thresholds from 0 to 5 
+
+```{r three_cutoffV1V1}
+# Extract visit 1 data 
+cor_051V1 <- cor_051$V1
+
+# Generate a vector of threshold values to iterate over
+cutoff <- 0:5
+
+# Generate a vector of V1 means at each V1 threshold
+cor_051V1.shift <- sapply(cutoff, function(x){mean(cor_051V1[cor_051V1 > x])})
+
+# Calculate deviation 
+(cor_051V1.df <- data.frame(time = 'V1',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff - 0.15, # Offset for plotting purposes
+                           mean = cor_051V1.shift) %>% 
+        mutate(deviation = mean - mean(cor_051V1),
+               time = as.character(time)))
+
+# Plot data
+ggplot(data = cor_051V1.df) +
+    aes(x = cutoff, y = mean, ymin = mean(cor_051V1), ymax = mean) +
+    geom_ribbon(alpha = 0.6) +
+    geom_point(size = 5) +
+    geom_line(size = 1) +
+    geom_text(aes(label = round(mean, 2)), 
+              nudge_y = 0.5, size = 5) +
+    scale_y_continuous(limits = c(5, 10),
+                       breaks = c(0, 2, 4, 6, 8, 10)) +
+    labs(title = 'Scenario 5C: Shift in V1 mean pain intensity',
+         caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+         x = 'Baseline pain intensity inclusion threshold',
+         y = 'Mean pain intensity*')
+```
+
+### Model mean of V2 with increasing V1 thresholds from 0 to 5 
+
+```{r three_cutoffV1V2}
+# Extract visit 2 data 
+cor_051V2 <- cor_051$V2
+
+# Generate a vector of threshold values to iterate over
+cutoff <- 0:5
+
+# Generate a vector of V2 means at each V1 threshold
+cor_051V2.shift <- map_dbl(.x = cutoff,
+                          ~ cor_051 %>% 
+                              filter(V1 > .x) %>% 
+                              .$V2 %>% 
+                              mean(.))
+
+# Calculate deviation
+(cor_051V2.df <- data.frame(time = 'V2',
+                           cutoff = cutoff,
+                           cutoff2 = cutoff + 0.15, # Offset for plotting purposes
+                           mean = cor_051V2.shift) %>% 
+        mutate(deviation = mean - mean(cor_051V2),
+               time = as.character(time)))
+
+# Plot data
+ggplot(data = cor_051V2.df) +
+    aes(x = cutoff, y = mean, ymin = mean(cor_051V2), ymax = mean) +
+    geom_ribbon(alpha = 0.6) +
+    geom_point(size = 5) +
+    geom_line(size = 1) +
+    geom_text(aes(label = round(mean, 2)), 
+              nudge_y = 0.5, size = 5) +
+    scale_y_continuous(limits = c(5, 10),
+                       breaks = c(0, 2, 4, 6, 8, 10)) +
+    labs(title = 'Scenario 5C: Shift in V2 mean pain intensity',
+         caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+         x = 'Baseline pain intensity inclusion threshold',
+         y = 'Mean pain intensity*')
+```
+
+## Distributional shifts caused by having a threshold
+
+### Threshold: 0
+
+```{r three_threshold0}
+# Process data
+placebo_3.0 <- cor_051 %>% 
+    filter(V1 >= 0) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_3.0 <- groupwiseMean(difference ~ 1,
+                          data = placebo_3.0,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_3.0$.id <- 0
+
+kable(diff_3.0)
+
+# Plot the data
+ggMarginal(placebo_3.0[, 1:3] %>% 
+               bind_rows(cor_051) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_051,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_3.0,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_051$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_3.0$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 0, linetype = 2) +
+               geom_hline(yintercept = mean(cor_051$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_3.0$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5C: Pain inclusion threshold = 0',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+### Threshold: 3
+
+```{r three_threshold3}
+# Process data
+placebo_3.3 <- cor_051 %>% 
+    filter(V1 >= 3) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_3.3 <- groupwiseMean(difference ~ 1,
+                          data = placebo_3.3,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_3.3$.id <- 3
+
+kable(diff_3.3)
+
+# Plot the data
+ggMarginal(placebo_3.3[, 1:3] %>% 
+               bind_rows(cor_051) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_051,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_3.3,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_051$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_3.3$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 3, linetype = 2) +
+               geom_hline(yintercept = mean(cor_051$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_3.3$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5C: Pain inclusion threshold = 3',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+### Threshold: 4
+
+```{r three_threshold4}
+# Process that data
+placebo_3.4 <- cor_051 %>% 
+    filter(V1 >= 4) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Set seed
+set.seed(2019)
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_3.4 <- groupwiseMean(difference ~ 1,
+                          data = placebo_3.4,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_3.4$.id <- 4
+
+kable(diff_3.4)
+
+# Plot the data
+ggMarginal(placebo_3.4[, 1:3] %>% 
+               bind_rows(cor_051) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_051,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_3.4,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_051$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_3.4$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 4, linetype = 2) +
+               geom_hline(yintercept = mean(cor_051$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_3.4$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5C: Pain inclusion threshold = 4',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+### Threshold: 5
+
+```{r three_threshold5}
+# Process that data 
+placebo_3.5 <- cor_051 %>% 
+    filter(V1 >= 5) %>% 
+    mutate(difference = V1 - V2) %>% 
+    mutate(group = 'Threshold')
+
+# Set seed
+set.seed(2019)
+
+# Calculate the mean (95%CI) difference between V1 and V2
+diff_3.5 <- groupwiseMean(difference ~ 1,
+                          data = placebo_3.5,
+                          R = 2000,
+                          traditional = FALSE,
+                          bca = TRUE) 
+
+diff_3.5$.id <- 5
+
+kable(diff_3.5)
+
+# Plot the data
+ggMarginal(placebo_3.5[, 1:3] %>% 
+               bind_rows(cor_051) %>% 
+               mutate(group = factor(group, 
+                                     levels = c('No threshold', 'Threshold'),
+                                     ordered = TRUE)) %>% 
+               ggplot(data = .) +
+               aes(x = V1, y = V2) +
+               geom_point(aes(colour = group, fill = group),
+                          size = 1) +
+               guides(colour = guide_legend(override.aes = list(size = 8))) +
+               geom_point(data = cor_051,
+                          colour = '#999999',
+                          size = 1) +
+               geom_point(data = placebo_3.5,
+                          size = 1,
+                          colour = '#000000') +
+               geom_vline(xintercept = mean(cor_051$V1),
+                          colour = pal[1], size = 1) +
+               geom_vline(xintercept = mean(placebo_3.5$V1),
+                          colour = pal[2], size = 1) +
+               geom_vline(xintercept = 5, linetype = 2) +
+               geom_hline(yintercept = mean(cor_051$V2),
+                          colour = pal[1], size = 1) +
+               geom_hline(yintercept = mean(placebo_3.5$V2),
+                          colour = pal[2], size = 1) +
+               scale_y_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_x_continuous(limits = c(0, 10),
+                                  breaks = c(0, 2, 4, 6, 8, 10)) +
+               scale_fill_manual(values = pal) +
+               scale_colour_manual(values = pal) +
+               labs(title = 'Scenario 5C: Pain inclusion threshold = 5',
+                    caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
+                    x = 'V1*',
+                    y = 'V2*') +
+               theme(legend.title = element_blank(),
+                     legend.position = c(0.8, 0.15)),
+           groupColour = TRUE,
+           groupFill = TRUE)
+```
+
+## Summary plots
+
+```{r three_plot0}
+# Plot 1
+shift_C <- cor_051V1.df %>% 
+  bind_rows(cor_051V2.df) %>% 
+  ggplot(data = .) + 
+  aes(y = mean,
+      x = cutoff2,
+      fill= time) +
+  geom_hline(yintercept = 6.47,
+             linetype = 2) +
+  geom_point(shape = 21,
+             size = 8) +
+  labs(title = 'Scenario 5C',
+       subtitle = 'Threshold 0: V1 = 6.5 (1.6), V2 = 6.5 (1.6), r = 0.44',
+       x = 'Baseline pain intensity inclusion threshold',
+       y = 'Mean pain intensity') +
+  scale_x_continuous(breaks = 0:5) +
+  scale_y_continuous(limits = c(5, 10)) +
+  scale_fill_manual(values = pal) +
+  theme(legend.title = element_blank(),
+        legend.position = c(0.88, 0.89),
+        legend.text = element_text(size = 20)); shift_C
+  
+# Plot 2
+# Bind diff_*.* dataframes
+diff_all_1 <- diff_3.0 %>% 
+  bind_rows(diff_3.3, diff_3.4, diff_3.5)
+
+diff_C <- diff_all_1 %>% 
+  mutate(Threshold = factor(.id)) %>% 
+  ggplot(data = .) +
+  aes(x = Threshold,
+      y = Mean,
+      ymin = Bca.lower,
+      ymax = Bca.upper) +
+  geom_hline(yintercept = 0, 
+             linetype = 2) +
+  geom_errorbar(width = 0.4) +
+  geom_point(shape = 21,
+             fill = pal[[1]],
+             size = 8) +
+  labs(title = 'Scenario 5C',
+       subtitle = 'Threshold 0: V1 = 6.5 (1.6), V2 = 6.5 (1.6), r = 0.44',
+       x = 'Baseline pain intensity inclusion threshold',
+       y = 'Mean difference (V1 - V2)') +
+  scale_y_continuous(limits = c(-0.2, 1.5)); diff_C
+```
+
+\newpage
+
+# Publication plots
+
+Code only, outputs to file.
+
+```{r publication_plots}
+# Shifts
+shifts <- shift_A + shift_B + shift_C + 
+  plot_layout(ncol = 3)
+
+ggsave(filename = 'figures/figure-scenario-5-baseline-shift.png',
+       plot = shifts,
+       height = 7, 
+       width = 21)
+
+# Diffs
+diffs <- diff_A + diff_B + diff_C +
+  plot_layout(ncol = 3)
+
+ggsave(filename = 'figures/figure-scenario-5-V1V2-difference.png',
+       plot = diffs,
+       height = 7, 
+       width = 21)
+```
+
+----
+
+# Session information 
+
+```{r}
+sessionInfo()
+```
