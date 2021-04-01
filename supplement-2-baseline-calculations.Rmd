@@ -10,6 +10,7 @@ date: "Last knitted: `r format(Sys.Date(), '%d %B %Y')`"
 library(tidyverse)
 library(spatstat)
 library(boot)
+library(skimr)
 
 # Output options
 if(!dir.exists('figures')){
@@ -227,6 +228,58 @@ sd_pooled$t0
 
 # Confidence interval of the pooled mean (percentile method)
 boot.ci(sd_pooled, type = 'perc')
+```
+
+----
+
+# Mean placebo reponse
+
+## DPN/PHN
+
+- Freeman R, Emir B, Parsons B. Predictors of placebo response in peripheral neuropathic pain: insights from pregabalin clinical trials. _J Pain Res_ **8**:257–268, 2015. DOI:10.2147/JPR.S78303.
+
+```{r}
+# Taken from Table 2 (all placebo response values are LS means)
+freeman_placebo <- c(1.16, 1.35, 1.93, 0.88, 1.77, 1.78, 2.54, 1.62, 
+                     2.32, 2.32, 0.97, 0.52, 1.06, 0.53, 1.86,
+                     1.60, 1.65)
+
+freeman_size <- c(82, 97, 80, 69, 93, 46, 134, 83, 149, 
+                  70, 87, 81, 84, 93, 16, 83, 32)
+
+length(freeman_placebo)
+
+df_placebo <- data.frame(value = freeman_placebo,
+                         size = freeman_size) %>%
+  mutate(value_size = value * size)
+
+# Weighted mean
+sum(df_placebo$value_size) / sum(df_placebo$size)
+```
+
+## chronic OA/LBP
+
+- Vase L, Vollert J, Finnerup NB, Miao X, Atkinson G, Marshall S, Nemeth R, Lange B, Liss C, Price DD, Maier C, Jensen TS, Segerdahl M. Predictors of the placebo analgesia response in randomized controlled trials of chronic pain: a meta-analysis of the individual data from nine industrially sponsored trials. _Pain_ **156**:1795–1802, 2015. DOI:10.1097/j.pain.0000000000000217.
+
+```{r}
+# Taken from Figure 1 
+scale_placebo = 5/42
+vase_placebo <- c(89, 146, 62, 97.5, 48, 52.5, 131, 155.5, 141.5) + 42
+vase_placebo <- round(scale_placebo * vase_placebo)
+vase_placebo <- vase_placebo / 10 # Conversion from 100mm VAS to 10 unit NRS 
+
+scale_size = 50/15
+vase_size <- c(35, 37, 37, 65, 65, 72.5, 95, 100, 100)
+vase_size <- round(vase_size * scale_size)
+
+length(vase_placebo)
+
+df_placebo2 <- data.frame(value = vase_placebo,
+                          size = vase_size) %>%
+  mutate(value_size = value * size)
+
+# Weighted mean
+sum(df_placebo2$value_size) / sum(df_placebo2$size)
 ```
 
 ----
