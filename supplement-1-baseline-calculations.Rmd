@@ -1,0 +1,291 @@
+---
+title: "Supplement 2"
+subtitle: "Baseline characteristics of RCTs for neuropathic pain"
+author: "Peter Kamerman"
+date: "Last knitted: `r format(Sys.Date(), '%d %B %Y')`"
+---
+
+```{r set_up, include = FALSE}
+# Load packages
+library(tidyverse)
+library(spatstat)
+library(boot)
+library(skimr)
+
+# Output options
+if(!dir.exists('figures')){
+  dir.create('figures')  
+} 
+
+if(!dir.exists('figures/supplement-2-baseline-calculations/')){
+  dir.create('figures/supplement-2-baseline-calculations/')  
+} 
+
+# Set options
+knitr::opts_chunk$set(warning = FALSE,
+                      message = FALSE,
+                      fig.height = 5,
+                      fig.width = 7, 
+                      fig.path = 'figures/supplement-2-baseline-calculations/')
+```
+
+----
+
+# Pain intensity inclusion thresholds
+
+- Original data source: Finnerup et al 2015, Appendix 4[^1].
+
+    - All numeric values were used (after removing duplicate entries).
+
+    - All visual analogue values were converted to a 0 to 10 scale.
+
+[^1]: Finnerup NB, Attal N, Haroutounian S, McNicol E, Baron R, Dworkin RH, Gilron I, Haanpää M, Hansson P, Jensen TS, Kamerman PR, Lund K, Moore A, Raja SN, Rice ASC, Rowbotham M, Sena E, Siddall P, Smith BH, Wallace M. Pharmacotherapy for neuropathic pain in adults: a systematic review and meta-analysis. Lancet Neurol 2015;14:162–173. doi:10.1016/S1474-4422(14)70251-0
+
+```{r thresholds}
+# Inclusion criteria thresholds extracted from the supplementary 
+# materials of Finnerup et al., 2015
+cut_off <- c(5, 4, 4, 2, 4, 3, 4, 6, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 
+             4, 6, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 
+             4, 4, 4, 4, 4, 4, 4, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 3, 4, 
+             4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 4, 4, 4, 3, 5, 4, 4, 4, 5, 5,
+             4, 4, 5, 3, 4, 4, 4, 5, 4, 3, 3, 3, 3, 3, 3, 3, 4, 7, 5, 4, 3, 2,
+             3, 4, 4, 2.5, 2.5, 4, 4, 4, 4, 5, 4, 4, 8, 4, 4, 4, 5, 3, 4, 4, 4)
+
+# Generate summary statistics
+## 6-number summary
+summary(cut_off)
+
+## Tabular summary of inclusion thresholds
+data.frame(cutoff = cut_off) %>% 
+    group_by(cutoff) %>% 
+    summarise(count = n(),
+              percent = round(100 * (count/length(cut_off)), 1)) %>% 
+    knitr::kable(., caption = 'Summary of pain inclusion thresholds')
+```
+
+----
+
+# Explore baseline pain intensity data
+
+## Import data
+
+- Original data source: Finnerup et al 2015, Appendix 4$^1$,
+
+```{r import data}
+data <- read_csv('data/baseline-data.csv')
+```
+
+## Explore data 
+
+### Median
+
+```{r median_explore}
+data %>% 
+    filter(mean_or_median == 'median') %>% 
+    summarise(min = round(min(value, na.rm = TRUE), 1),
+              Q25 = round(quantile(value, probs = 0.25, na.rm = TRUE), 1),
+              mean = round(mean(value, na.rm = TRUE), 1),
+              median = round(median(value, na.rm = TRUE), 1),
+              Q75 = round(quantile(value, probs = 0.75, na.rm = TRUE), 1),
+              max = round(max(value, na.rm = TRUE), 1)) %>% 
+    knitr::kable(., caption = 'Summary: median values')
+```
+
+### Mean
+
+```{r mean_explore}
+data %>% 
+    filter(mean_or_median == 'mean') %>% 
+    summarise(min = round(min(value, na.rm = TRUE), 1),
+              Q25 = round(quantile(value, probs = 0.25, na.rm = TRUE), 1),
+              mean = round(mean(value, na.rm = TRUE), 1),
+              median = round(median(value, na.rm = TRUE), 1),
+              Q75 = round(quantile(value, probs = 0.75, na.rm = TRUE), 1),
+              max = round(max(value, na.rm = TRUE), 1)) %>% 
+    knitr::kable(., caption = 'Summary: mean values')
+```
+
+### SD
+
+```{r sd_explore}
+data %>% 
+    filter(!is.na(sd)) %>% 
+    summarise(min = round(min(sd, na.rm = TRUE), 1),
+              Q25 = round(quantile(sd, probs = 0.25, na.rm = TRUE), 1),
+              mean = round(mean(sd, na.rm = TRUE), 1),
+              median = round(median(sd, na.rm = TRUE), 1),
+              Q75 = round(quantile(sd, probs = 0.75, na.rm = TRUE), 1),
+              max = round(max(sd, na.rm = TRUE), 1)) %>% 
+    knitr::kable(., caption = 'Range of SD values')
+```
+
+----
+
+# Weighted medians 
+
+- Three studies, four median values.
+
+- Hahn et al., 2004 (active), Hahn et al., 2004 (placebo), Yuen et al., 2002, Low et al., 1995
+
+```{r median}
+# Process data
+median <- data %>% 
+    filter(included_in_analysis == 'yes') %>% 
+    filter(mean_or_median == 'median') %>% 
+    # Calculate total sample size
+    mutate(total_sample = sum(sample_size)) %>% 
+    # Calculate weights
+    mutate(weights = sample_size / total_sample)
+    
+## Weighted median
+weighted.median(x = median$value, 
+                w = median$weights)
+```
+
+----
+
+# Pooled mean
+
+- Formula sourced from: https://www.ncbi.nlm.nih.gov/books/NBK56512/
+
+```{r pooled_mean}
+# Make bootstrap function
+pooled_mean <- function(d, i){
+    # Select data
+    data <- d[i, ]
+    
+    # Process data
+    mean <- data %>% 
+      # Get the required data
+      filter(included_in_analysis == 'yes') %>% 
+      filter(mean_or_median == 'mean')
+    
+    # Calculate preliminary values
+    mean <- mean %>% 
+      mutate(mean_by_n = value * sample_size)
+    
+    # Calculate pooled mean
+    sum(mean$mean_by_n) / sum(mean$sample_size)
+}
+
+# Perform bootstrap
+set.seed(2019)
+mean_pooled <- boot(data = data, 
+                    statistic = pooled_mean, 
+                    R = 999, 
+                    stype = 'i',
+                    parallel = 'multicore',
+                    ncpus = 4)
+
+# Pooled mean 
+mean_pooled$t0
+
+# Confidence interval of the pooled mean (percentile method)
+boot.ci(mean_pooled, type = 'perc')
+```
+
+----
+
+# Pooled SD
+
+- Formula sourced from: https://www.ncbi.nlm.nih.gov/books/NBK56512/
+
+```{r pooled_sd}
+# Make bootstrap function
+pooled_sd <- function(d, i){
+    # Select data
+    data <- d[i, ]
+    
+    # Process the data 
+    sd <- data %>% 
+      filter(included_in_analysis == 'yes') %>% 
+      filter(mean_or_median == 'mean') %>% 
+      filter(!is.na(sd)) %>% 
+      # Square the SD
+      mutate(SD_squared = sd^2) %>% 
+      # Calculate sample size -1
+      mutate(n_minus_1 = sample_size - 1) %>% 
+      # Get the number of groups
+      mutate(k = length(unique(.$authors))) %>% 
+      # Calculate (n-1)SD^2
+      mutate(numerator = SD_squared * n_minus_1)
+  
+    # Pooled SD
+    sqrt(sum(sd$numerator) / (sum(sd$sample_size) - sd$k[[1]]))
+}
+
+# Perform bootstrap
+set.seed(2019)
+sd_pooled <- boot(data = data, 
+                    statistic = pooled_sd, 
+                    R = 999, 
+                    stype = 'i',
+                    parallel = 'multicore',
+                    ncpus = 4)
+
+# Pooled mean 
+sd_pooled$t0
+
+# Confidence interval of the pooled mean (percentile method)
+boot.ci(sd_pooled, type = 'perc')
+```
+
+----
+
+# Mean placebo reponse
+
+## DPN/PHN
+
+- Freeman R, Emir B, Parsons B. Predictors of placebo response in peripheral neuropathic pain: insights from pregabalin clinical trials. _J Pain Res_ **8**:257–268, 2015. DOI:10.2147/JPR.S78303.
+
+```{r}
+# Taken from Table 2 (all placebo response values are LS means)
+freeman_placebo <- c(1.16, 1.35, 1.93, 0.88, 1.77, 1.78, 2.54, 1.62, 
+                     2.32, 2.32, 0.97, 0.52, 1.06, 0.53, 1.86,
+                     1.60, 1.65)
+
+freeman_size <- c(82, 97, 80, 69, 93, 46, 134, 83, 149, 
+                  70, 87, 81, 84, 93, 16, 83, 32)
+
+length(freeman_placebo)
+
+df_placebo <- data.frame(value = freeman_placebo,
+                         size = freeman_size) %>%
+  mutate(value_size = value * size)
+
+# Weighted mean
+sum(df_placebo$value_size) / sum(df_placebo$size)
+```
+
+## chronic OA/LBP
+
+- Vase L, Vollert J, Finnerup NB, Miao X, Atkinson G, Marshall S, Nemeth R, Lange B, Liss C, Price DD, Maier C, Jensen TS, Segerdahl M. Predictors of the placebo analgesia response in randomized controlled trials of chronic pain: a meta-analysis of the individual data from nine industrially sponsored trials. _Pain_ **156**:1795–1802, 2015. DOI:10.1097/j.pain.0000000000000217.
+
+```{r}
+# Taken from Figure 1 
+scale_placebo = 5/42
+vase_placebo <- c(89, 146, 62, 97.5, 48, 52.5, 131, 155.5, 141.5) + 42
+vase_placebo <- round(scale_placebo * vase_placebo)
+vase_placebo <- vase_placebo / 10 # Conversion from 100mm VAS to 10 unit NRS 
+
+scale_size = 50/15
+vase_size <- c(35, 37, 37, 65, 65, 72.5, 95, 100, 100)
+vase_size <- round(vase_size * scale_size)
+
+length(vase_placebo)
+
+df_placebo2 <- data.frame(value = vase_placebo,
+                          size = vase_size) %>%
+  mutate(value_size = value * size)
+
+# Weighted mean
+sum(df_placebo2$value_size) / sum(df_placebo2$size)
+```
+
+----
+
+# Session information
+
+```{r session_info}
+sessionInfo()
+```
