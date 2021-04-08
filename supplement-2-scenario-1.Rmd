@@ -164,8 +164,8 @@ ggMarginal(ggplot(data = cor_026.base) +
                         label = str_glue("SD = {round(sd(cor_026.base$V1), 2)}")) +
                labs(title = 'Scenario 1A: Unconstained',
                     caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
-                    x = 'V1',
-                    y = 'V2') +
+                    x = 'V1*',
+                    y = 'V2*') +
                scale_y_continuous(limits = c(-5, 15),
                                   breaks = c(0, 5, 10)) +
                scale_x_continuous(limits = c(-5, 15),
@@ -219,7 +219,7 @@ ggMarginal(ggplot(data = cor_026) +
                                   breaks = c(0, 5, 10)))
 ```
 
-## Sample size after contraining data
+## Sample size after constraining data
 
 ```{r}
 nrow(cor_026)
@@ -690,8 +690,8 @@ ggMarginal(ggplot(data = cor_037.base) +
                         label = str_glue("SD = {round(sd(cor_037.base$V1), 2)}")) +
                labs(title = 'Scenario 1B: Unconstained',
                     caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
-                    x = 'V1',
-                    y = 'V2') +
+                    x = 'V1*',
+                    y = 'V2*') +
                scale_y_continuous(limits = c(-5, 15),
                                   breaks = c(0, 5, 10)) +
                scale_x_continuous(limits = c(-5, 15),
@@ -737,8 +737,8 @@ ggMarginal(ggplot(data = cor_037) +
                         label = str_glue("SD = {round(sd(cor_037$V1), 2)}")) +
                labs(title = 'Scenario 1B: Constrained',
                     caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
-                    x = 'V1',
-                    y = 'V2') +
+                    x = 'V1*',
+                    y = 'V2*') +
                scale_y_continuous(limits = c(-5, 15),
                                   breaks = c(0, 5, 10)) +
                scale_x_continuous(limits = c(-5, 15),
