@@ -1271,7 +1271,7 @@ ggMarginal(ggplot(data = cor_051) +
                                   breaks = c(0, 5, 10)))
 ```
 
-## Sample size after contraining data
+## Sample size after constraining data
 
 ```{r}
 nrow(cor_051)
