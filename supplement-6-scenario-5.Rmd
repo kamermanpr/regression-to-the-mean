@@ -644,7 +644,7 @@ diff_A <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 6.5 (1.6), ENDPOINT = 6.5 (1.6), r = 0.2',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_A
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_A
 ```
 
 \newpage
@@ -1170,7 +1170,7 @@ diff_B <- diff_all_1 %>%
        subtitle = 'Threshold 0\nBASELINE = 6.5 (1.6), ENDPOINT = 6.5 (1.6), r = 0.31',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_B
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_B
 ```
 
 \newpage
@@ -1665,11 +1665,13 @@ shift_C <- cor_051V1.df %>%
        subtitle = 'Threshold 0:\nBASELINE= 6.5 (1.6), ENDPOINT = 6.5 (1.6), r = 0.44',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean pain intensity') +
-  scale_x_continuous(breaks = 0:5) +
+  scale_x_continuous(breaks = 0:3,
+                     labels = c(0, 3, 4, 5)) +
   scale_y_continuous(limits = c(5, 10)) +
-  scale_fill_manual(values = pal) +
+  scale_fill_manual(values = pal,
+                    labels = c('BASELINE', 'ENDPOINT')) +
   theme(legend.title = element_blank(),
-        legend.position = c(0.88, 0.89),
+        legend.position = c(0.80, 0.89),
         legend.text = element_text(size = 20)); shift_C
   
 # Plot 2
@@ -1694,7 +1696,7 @@ diff_C <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 6.5 (1.6), ENDPOINT = 6.5 (1.6), r = 0.44',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_C
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_C
 ```
 
 \newpage
@@ -1710,7 +1712,7 @@ shifts <- shift_A + shift_B + shift_C +
 
 ggsave(filename = 'figures/figure-scenario-5-baseline-shift.png',
        plot = shifts,
-       height = 7, 
+       height = 7.2, 
        width = 21)
 
 # Diffs
@@ -1719,7 +1721,7 @@ diffs <- diff_A + diff_B + diff_C +
 
 ggsave(filename = 'figures/figure-scenario-5-V1V2-difference.png',
        plot = diffs,
-       height = 7, 
+       height = 7.2, 
        width = 21)
 ```
 

@@ -642,7 +642,7 @@ diff_A <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 6.0 (1.8), ENDPOINT = 6.0 (1.9), r = 0.19',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_A
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_A
 ```
 
 \newpage
@@ -1168,7 +1168,7 @@ diff_B <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 6.0 (1.8), ENDPOINT = 5.9 (1.9), r = 0.3',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_B
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_B
 ```
 
 \newpage
@@ -1691,7 +1691,7 @@ diff_C <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 6.0 (1.8), ENDPOINT = 5.9 (1.9), r = 0.43',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_C
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_C
 ```
 
 \newpage
@@ -1707,7 +1707,7 @@ shifts <- shift_A + shift_B + shift_C +
 
 ggsave(filename = 'figures/figure-scenario-3-baseline-shift.png',
        plot = shifts,
-       height = 7, 
+       height = 7.2, 
        width = 21)
 
 # Diffs
@@ -1716,7 +1716,7 @@ diffs <- diff_A + diff_B + diff_C +
 
 ggsave(filename = 'figures/figure-scenario-3-V1V2-difference.png',
        plot = diffs,
-       height = 7, 
+       height = 7.2, 
        width = 21)
 ```
 

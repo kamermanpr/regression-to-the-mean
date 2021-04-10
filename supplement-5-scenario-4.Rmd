@@ -644,7 +644,7 @@ diff_A <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 5.6 (1.7), ENDPOINT = 5.6 (1.7), r = 0.23',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_A
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_A
 ```
 
 \newpage
@@ -1170,7 +1170,7 @@ diff_B <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 5.6 (1.7), ENDPOINT = 5.6 (1.7), r = 0.33',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_B
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_B
 ```
 
 \newpage
@@ -1662,7 +1662,7 @@ shift_C <- cor_051V1.df %>%
   geom_point(shape = 21,
              size = 8) +
   labs(title = 'Scenario 4C',
-       subtitle = 'Threshold 0:\nBASELINE = 5.6 (1.7), ENDPOINT = 5.6 (1.6), r = 0.47',
+       subtitle = 'Threshold 0:\nBASELINE = 5.6 (1.6), ENDPOINT = 5.6 (1.7), r = 0.47',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean pain intensity') +
   scale_x_continuous(breaks = 0:3,
@@ -1693,10 +1693,10 @@ diff_C <- diff_all_1 %>%
              fill = pal[[1]],
              size = 8) +
   labs(title = 'Scenario 4C',
-       subtitle = 'Threshold 0:\nBASELINE = 5.6 (1.7), ENDPOINT = 5.6 (1.6), r = 0.47',
+       subtitle = 'Threshold 0:\nBASELINE = 5.6 (1.6), ENDPOINT = 5.6 (1.7), r = 0.47',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_C
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_C
 ```
 
 \newpage
@@ -1712,7 +1712,7 @@ shifts <- shift_A + shift_B + shift_C +
 
 ggsave(filename = 'figures/figure-scenario-4-baseline-shift.png',
        plot = shifts,
-       height = 7, 
+       height = 7.2, 
        width = 21)
 
 # Diffs
@@ -1721,7 +1721,7 @@ diffs <- diff_A + diff_B + diff_C +
 
 ggsave(filename = 'figures/figure-scenario-4-V1V2-difference.png',
        plot = diffs,
-       height = 7, 
+       height = 7.2, 
        width = 21)
 ```
 

@@ -211,8 +211,8 @@ ggMarginal(ggplot(data = cor_026) +
                         label = str_glue("SD = {round(sd(cor_026$V1), 2)}")) +
                labs(title = 'Scenario 1A: Constrained',
                     caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
-                    x = 'V1',
-                    y = 'V2') +
+                    x = 'V1*',
+                    y = 'V2*') +
                scale_y_continuous(limits = c(-5, 15),
                                   breaks = c(0, 5, 10)) +
                scale_x_continuous(limits = c(-5, 15),
@@ -642,7 +642,7 @@ diff_A <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4), ENDPOINT = 6.1 (1.4), r = 0.23',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_A
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_A
 ```
 
 \newpage
@@ -1168,7 +1168,7 @@ diff_B <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4), ENDPOINT = 6.1 (1.4), r = 0.34',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_B
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_B
 ```
 
 \newpage
@@ -1216,8 +1216,8 @@ ggMarginal(ggplot(data = cor_051.base) +
                         label = str_glue("SD = {round(sd(cor_051.base$V1), 2)}")) +
                labs(title = 'Scenario 1C: Unconstained',
                     caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
-                    x = 'V1',
-                    y = 'V2') +
+                    x = 'V1*',
+                    y = 'V2*') +
                scale_y_continuous(limits = c(-5, 15),
                                   breaks = c(0, 5, 10)) +
                scale_x_continuous(limits = c(-5, 15),
@@ -1263,8 +1263,8 @@ ggMarginal(ggplot(data = cor_051) +
                         label = str_glue("SD = {round(sd(cor_051$V1), 2)}")) +
                labs(title = 'Scenario 1C: Constrained',
                     caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
-                    x = 'V1',
-                    y = 'V2') +
+                    x = 'V1*',
+                    y = 'V2*') +
                scale_y_continuous(limits = c(-5, 15),
                                   breaks = c(0, 5, 10)) +
                scale_x_continuous(limits = c(-5, 15),
@@ -1695,7 +1695,7 @@ diff_C <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4), ENDPOINT = 6.1 (1.4), r = 0.49',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean difference') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_C
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_C
 ```
 
 \newpage
