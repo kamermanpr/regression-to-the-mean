@@ -1009,7 +1009,7 @@ ggMarginal(placebo_2.3[, 1:3] %>%
            groupFill = TRUE)
 
 # Special plot for threshold figure
-threshold_3 <- ggMarginal(placebo_2.0[, 1:3] %>% 
+threshold_3 <- ggMarginal(placebo_2.3[, 1:3] %>% 
                bind_rows(cor_037) %>% 
                mutate(group = factor(group, 
                                      levels = c('No threshold', 'Threshold'),
@@ -1022,17 +1022,17 @@ threshold_3 <- ggMarginal(placebo_2.0[, 1:3] %>%
                geom_point(data = cor_037,
                           colour = '#999999',
                           size = 1) +
-               geom_point(data = placebo_2.0,
+               geom_point(data = placebo_2.3,
                           size = 1,
                           colour = '#000000') +
                geom_vline(xintercept = mean(cor_037$V1),
                           colour = pal[1], size = 1) +
-               geom_vline(xintercept = mean(placebo_2.0$V1),
+               geom_vline(xintercept = mean(placebo_2.3$V1),
                           colour = pal[2], size = 1) +
-               geom_vline(xintercept = 0, linetype = 2) +
+               geom_vline(xintercept = 3, linetype = 2) +
                geom_hline(yintercept = mean(cor_037$V2),
                           colour = pal[1], size = 1) +
-               geom_hline(yintercept = mean(placebo_2.0$V2),
+               geom_hline(yintercept = mean(placebo_2.3$V2),
                           colour = pal[2], size = 1) +
                scale_y_continuous(limits = c(0, 10),
                                   breaks = c(0, 2, 4, 6, 8, 10)) +
