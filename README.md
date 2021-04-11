@@ -1,6 +1,9 @@
 # Regression to the mean
 
 ## Bibliographic information
+
+[![DOI](https://zenodo.org/badge/200228370.svg)](https://zenodo.org/badge/latestdoi/200228370)
+
 Kamerman PR, Vollert J. Greater baseline pain inclusion criteria in clinical trials increases regression to the mean effect: a modelling study.
 
 ## Abstract
