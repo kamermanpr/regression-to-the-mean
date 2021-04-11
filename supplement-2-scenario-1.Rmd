@@ -1,6 +1,6 @@
 ---
-title: "Supplement 3: Scenario 1"
-subtitle: "Mean pain intensity of 6.2 (SD 1.7) at 0.26, 0.37, and 0.51 inter-measurement correlation"
+title: "Supplement 2: Scenario 1"
+subtitle: "Mean pain intensity of 6.2 (SD 1.4) at 0.26, 0.37, and 0.51 inter-measurement correlation"
 author: "Peter Kamerman"
 date: "Last knitted: `r format(Sys.Date(), '%d %B %Y')`"
 geometry: margin=15mm
@@ -36,13 +36,13 @@ if(!dir.exists('figures')){
   dir.create('figures')  
 } 
 
-if(!dir.exists('figures/supplement-3-scenario-1')){
-  dir.create('figures/supplement-3-scenario-1')  
+if(!dir.exists('figures/supplement-2-scenario-1')){
+  dir.create('figures/supplement-2-scenario-1')  
 } 
 
 opts_chunk$set(fig.height = 8,
                fig.width = 8,
-               fig.path = 'figures/supplement-3-scenario-1/')
+               fig.path = 'figures/supplement-2-scenario-1/')
 ```
 
 ----
@@ -59,7 +59,7 @@ This script demonstrates the effect of this "flattening" of the relationship bet
 
 ### Data simulation parameters
 
-Baseline pain scores were extracted from papers listed in the supplementary materials of a systematic review of pharmacological treatments for neuropathic pain[^1] and that did not include baseline pain threshold inclusion criteria. Using this information, the pooled mean pain intensity at baseline was calculated to be 6.2 on an 11-point numerical pain rating scale (NRS), and the pooled SD of pain intensity at baseline was 1.7. The correlation between measurements 1 (V1) and 2 (V2) was set at 0.51 and 0.37 based on aggregated data across five clinical trials from 788 patients with rheumatoid arthritis for baseline vs week 4 and week 12 of the trial, respectively[^2], and 0.26 based on aggregated data across nine clinical trials from 2017 patients with knee or hip arthritis or chronic low back pain for baseline vs week 12 of the trial[^3]. 
+Baseline pain scores were extracted from papers listed in the supplementary materials of a systematic review of pharmacological treatments for neuropathic pain[^1] and that did not include baseline pain threshold inclusion criteria. Using this information, the pooled mean pain intensity at baseline was calculated to be 6.2 on an 11-point numerical pain rating scale (NRS), and the lower limit of the 95% confidence interval of the pooled SD of pain intensity at baseline was 1.4. The correlation between measurements 1 (V1) and 2 (V2) was set at 0.51 and 0.37 based on aggregated data across five clinical trials from 788 patients with rheumatoid arthritis for baseline vs week 4 and week 12 of the trial, respectively[^2], and 0.26 based on aggregated data across nine clinical trials from 2017 patients with knee or hip arthritis or chronic low back pain for baseline vs week 12 of the trial[^3]. 
 
 [^1]: Finnerup NB, Attal N, Haroutounian S, McNicol E, Baron R, Dworkin RH, Gilron I, Haanpää M, Hansson P, Jensen TS, Kamerman PR, Lund K, Moore A, Raja SN, Rice ASC, Rowbotham M, Sena E, Siddall P, Smith BH, Wallace M. Pharmacotherapy for neuropathic pain in adults: a systematic review and meta-analysis. Lancet Neurol 2015;14:162–173. doi:10.1016/S1474-4422(14)70251-0
 
@@ -75,13 +75,13 @@ Covariance matrices were generated for each of the three combinations of correla
 
 [^5]: Venables WN, Ripley BD. Modern Applied Statistics with S. Fourth. New York: Springer, 2002. Available: http://www.stats.ox.ac.uk/pub/MASS4
 
-To check the data once they had been generated, measurement 1 (V1) and measurement 2 (V2) were plotted against each other using scatterplots with marginal density plots, and the sample means and SDs were calculated, as was the correlation between the two samples (_unconstrained data_). Thereafter, values were filtered (constrained) such that the minimum V1 value was 1 and the minimum V2 value was 0 on an 11-point NRS, and the maximum V1 and V2 values were 10 on an 11-point NRS. The minimum value of V1 was set to 1 because volunteers eligible to enter a placebo-controlled clinical trial can be expected to have at least some pain. In comparison, V2 values were unconstrained and could take any value from 0 to 10 because pain intensity may take values across the full range of the scale on follow-up. Maximum pain rating were limited to values of 10, the upper limit of the rating scale. To check for changes in centrality, spread, and correlation after filtering the data, the data were once again assessed using plots and numeric summaries. 
+To check the data once they had been generated, measurement 1 (V1) and measurement 2 (V2) were plotted against each other using scatterplots with marginal density plots, and the sample means and SDs were calculated, as was the correlation between the two samples (_unconstrained data_). Thereafter, values were filtered (constrained) such that the minimum V1 value was 1 and the minimum V2 value was 0 on an 11-point NRS, and the maximum V1 and V2 values were 10 on an 11-point NRS. The minimum value of V1 was set to 1 because volunteers eligible to enter a placebo-controlled clinical trial can be expected to have at least some pain. In comparison, V2 values were unconstrained and could take any value from 0 to 10 because pain intensity may take values across the full range of the scale on follow-up. Maximum pain intensity were limited to values of 10, the upper limit of the intensity scale. To check for changes in centrality, spread, and correlation after filtering the data, the data were once again assessed using plots and numeric summaries. 
 
 ### Modelling the effect of baseline pain inclusion thresholds
 
-A baseline inclusion threshold of 0 on an 11-point NRS (i.e., no inclusion threshold) was used as a "control". In addition to the control threshold, three baseline pain intensity inclusion thresholds were selected based on the data listed in the supplementary materials of Finnerup and colleagues$^1$. The three thresholds were: pain intensity $\geq$ 4 (71% of listed studies), pain intensity $\geq$ 3 (12% of listed studies), and pain intensity $\geq$ 5 (11% of listed studies). Data from the three simulated datasets (mean = 6.2, SD = 1.7, correlation = 0.26, 0.37, 0.51) were each modelled under each of the four baseline pain intensity inclusion thresholds. 
+A baseline inclusion threshold of 0 on an 11-point NRS (i.e., no inclusion threshold) was used as a "control". In addition to the control threshold, three baseline pain intensity inclusion thresholds were selected based on the data listed in the supplementary materials of Finnerup and colleagues$^1$. The three thresholds were: pain intensity $\geq$ 4 (71% of listed studies), pain intensity $\geq$ 3 (12% of listed studies), and pain intensity $\geq$ 5 (11% of listed studies). Data from the three simulated datasets (mean = 6.2, SD = 1.4, correlation = 0.26, 0.37, 0.51) were each modelled under each of the three baseline pain intensity inclusion thresholds, and when there was no threshold. 
 
-Modelling the effect of the thresholds involved removing all pairs of V1 and V2 data where V1 was less than the threshold value, yielding new datasets V1\* and V2\*. To assess the effect of removing data pairs on the group means, we calculated the difference in group means between V1 and V1\*, and V2 and V2\*. To assess the magnitude of the effect, we calculated the mean difference in pain intensity scores between V1* and V2* (point estimate), and generated bias-corrected and accelerated 95% bootstrapped confidence intervals of the difference (2000 resamples, generated using the `groupwiseMean` function from the `rcompanion` package[^6]). 
+Modelling the effect of the thresholds involved removing all pairs of V1 and V2 data where V1 was less than the threshold value, yielding new datasets V1\' and V2\'. To assess the effect of removing data pairs on the group means, we calculated the difference in group means between V1 and V1\', and V2 and V2\'. To assess the magnitude of the effect, we calculated the mean difference in pain intensity scores between V1\' and V2\' (point estimate), and generated bias-corrected and accelerated 95% bootstrapped confidence intervals of the difference (2000 resamples, generated using the `groupwiseMean` function from the `rcompanion` package[^6]). 
 
 [^6]: Mangiafico S. rcompanion: functions to support extension education program evaluation. 2018. Available: https://CRAN.R-project.org/package=rcompanion.
 
@@ -93,7 +93,7 @@ Note: Because of random sampling the mean (SD) of the samples differ slightly fr
 
 # Generate 2x2 covariance matrices 
 
-Generate a covariance matrix using an SD of 1.7 and correlation of:
+Generate a covariance matrix using an SD of 1.4 and correlation of:
 
 - _r_ = 0.26 (Scenario 1A)
 
@@ -108,7 +108,7 @@ cor_037 <- matrix(c(1, 0.37, 0.37, 1), ncol = 2)
 cor_051 <- matrix(c(1, 0.51, 0.51, 1), ncol = 2)
 
 # Set the standard deviation
-std <- c(1.7, 1.7)
+std <- c(1.4, 1.4)
 
 # Generate a 2*2 covariance matrices
 cov_026 <- cor2cov(cor.mat = cor_026,
@@ -132,7 +132,7 @@ cov_051 <- cor2cov(cor.mat = cor_051,
 set.seed(2019)
 
 # Generate the data
-cor_026.base <- as.data.frame(mvrnorm(n = 1000, mu = c(6.2, 6.2), Sigma = cov_026))
+cor_026.base <- as.data.frame(mvrnorm(n = 1000, mu = c(6.2, 6.2), Sigma = cov_026)) 
 
 # Plot unconstrained data
 ggMarginal(ggplot(data = cor_026.base) +
@@ -219,7 +219,7 @@ ggMarginal(ggplot(data = cor_026) +
                                   breaks = c(0, 5, 10)))
 ```
 
-## Sample size after contraining data
+## Sample size after constraining data
 
 ```{r}
 nrow(cor_026)
@@ -316,6 +316,9 @@ placebo_1.0 <- cor_026 %>%
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
 
+# Set seed
+set.seed(2019)
+
 # Calculate the mean (95%CI) difference between V1 and V2
 diff_1.0 <- groupwiseMean(difference ~ 1,
                           data = placebo_1.0,
@@ -369,6 +372,12 @@ ggMarginal(placebo_1.0[, 1:3] %>%
            groupFill = TRUE)
 ```
 
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_026) - nrow(placebo_1.0)
+```
+
 ### Threshold: 3
 
 ```{r one_threshold3}
@@ -377,6 +386,9 @@ placebo_1.3 <- cor_026 %>%
     filter(V1 >= 3) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
+
+# Set seed
+set.seed(2019)
 
 # Calculate the mean (95%CI) difference between V1 and V2
 diff_1.3 <- groupwiseMean(difference ~ 1,
@@ -429,6 +441,12 @@ ggMarginal(placebo_1.3[, 1:3] %>%
                      legend.position = c(0.8, 0.15)),
            groupColour = TRUE,
            groupFill = TRUE)
+```
+
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_026) - nrow(placebo_1.3)
 ```
 
 ### Threshold: 4
@@ -496,6 +514,12 @@ ggMarginal(placebo_1.4[, 1:3] %>%
            groupFill = TRUE)
 ```
 
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_026) - nrow(placebo_1.4)
+```
+
 ### Threshold: 5
 
 ```{r one_threshold5}
@@ -561,29 +585,39 @@ ggMarginal(placebo_1.5[, 1:3] %>%
            groupFill = TRUE)
 ```
 
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_026) - nrow(placebo_1.5)
+```
+
 ## Summary plots
 
 ```{r one_plot0}
 # Plot 1
 shift_A <- cor_026V1.df %>% 
   bind_rows(cor_026V2.df) %>% 
+  filter(cutoff != 1 & cutoff != 2) %>% 
+  mutate(cutoff2 = c(-0.1, 0.9, 1.9, 2.9, 0.1, 1.1, 2.1, 3.1)) %>% 
   ggplot(data = .) + 
   aes(y = mean,
       x = cutoff2,
-      fill = time) +
-  geom_hline(yintercept = 6.05,
+      fill= time) +
+  geom_hline(yintercept = 6.1,
              linetype = 2) +
   geom_point(shape = 21,
              size = 8) +
   labs(title = 'Scenario 1A',
-       subtitle = 'Threshold 0: V1 = 6.1 (1.6), V2 = 6.0 (1.7), r = 0.21',
        x = 'Baseline pain intensity inclusion threshold',
-       y = 'Mean pain intensity') +
-  scale_x_continuous(breaks = 0:5) +
+       y = 'Mean pain intensity',
+       subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4), ENDPOINT = 6.1 (1.4), r = 0.23') +
+  scale_x_continuous(breaks = c(0, 1, 2, 3),
+                     labels = c(0, 3, 4, 5)) +
   scale_y_continuous(limits = c(5, 10)) +
-  scale_fill_manual(values = pal) +
+  scale_fill_manual(labels = c('BASELINE', 'ENDPOINT'),
+                    values = pal) +
   theme(legend.title = element_blank(),
-        legend.position = c(0.88, 0.89),
+        legend.position = c(0.8, 0.89),
         legend.text = element_text(size = 20)); shift_A
   
 # Plot 2
@@ -605,10 +639,10 @@ diff_A <- diff_all_1 %>%
              fill = pal[[1]],
              size = 8) +
   labs(title = 'Scenario 1A',
-       subtitle = 'Threshold 0: V1 = 6.1 (1.6), V2 = 6.0 (1.7), r = 0.21',
+       subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4), ENDPOINT = 6.1 (1.4), r = 0.23',
        x = 'Baseline pain intensity inclusion threshold',
-       y = 'Mean difference (V1 - V2)') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_A
+       y = 'Mean difference') +
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_A
 ```
 
 \newpage
@@ -792,7 +826,7 @@ ggplot(data = cor_037V2.df) +
     scale_y_continuous(limits = c(5, 10),
                        breaks = c(0, 2, 4, 6, 8, 10)) +
     labs(title = 'Scenario 1B: Shift in V2 mean pain intensity',
-         caption = 'Population parameters: Mean = 6.2, SD = 1.7, r = 0.37',
+         caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
          x = 'Baseline pain intensity inclusion threshold',
          y = 'Mean pain intensity*')
 ```
@@ -807,6 +841,9 @@ placebo_2.0 <- cor_037 %>%
     filter(V1 >= 0) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
+
+# Set seed
+set.seed(2019)
 
 # Calculate the mean (95%CI) difference between V1 and V2
 diff_2.0 <- groupwiseMean(difference ~ 1,
@@ -861,6 +898,12 @@ ggMarginal(placebo_2.0[, 1:3] %>%
            groupFill = TRUE)
 ```
 
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_037) - nrow(placebo_2.0)
+```
+
 ### Threshold: 3
 
 ```{r two_threshold3}
@@ -869,6 +912,9 @@ placebo_2.3 <- cor_037 %>%
     filter(V1 >= 3) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
+
+# Set seed
+set.seed(2019)
 
 # Calculate the mean (95%CI) difference between V1 and V2
 diff_2.3 <- groupwiseMean(difference ~ 1,
@@ -921,6 +967,12 @@ ggMarginal(placebo_2.3[, 1:3] %>%
                      legend.position = c(0.8, 0.15)),
            groupColour = TRUE,
            groupFill = TRUE)
+```
+
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_037) - nrow(placebo_2.3)
 ```
 
 ### Threshold: 4
@@ -988,6 +1040,12 @@ ggMarginal(placebo_2.4[, 1:3] %>%
            groupFill = TRUE)
 ```
 
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_037) - nrow(placebo_2.4)
+```
+
 ### Threshold: 5
 
 ```{r two_threshold5}
@@ -1053,29 +1111,39 @@ ggMarginal(placebo_2.5[, 1:3] %>%
            groupFill = TRUE)
 ```
 
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_037) - nrow(placebo_2.5)
+```
+
 ## Summary plots
 
 ```{r two_plot0}
 # Plot 1
 shift_B <- cor_037V1.df %>% 
   bind_rows(cor_037V2.df) %>% 
+  filter(cutoff != 1 & cutoff != 2) %>% 
+  mutate(cutoff2 = c(-0.1, 0.9, 1.9, 2.9, 0.1, 1.1, 2.1, 3.1)) %>% 
   ggplot(data = .) + 
   aes(y = mean,
       x = cutoff2,
       fill= time) +
-  geom_hline(yintercept = 6.04,
+  geom_hline(yintercept = 6.1,
              linetype = 2) +
   geom_point(shape = 21,
              size = 8) +
-  labs(title = 'Scenario 1B', 
-       subtitle = 'Threshold 0: V1 = 6.0 (1.6), V2 = 6.0 (1.6), r = 0.32',
+  labs(title = 'Scenario 1B',
+       subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4), ENDPOINT = 6.1 (1.4), r = 0.34',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean pain intensity') +
-  scale_x_continuous(breaks = 0:5) +
+  scale_x_continuous(breaks = 0:3,
+                     labels = c(0, 3, 4, 5)) +
   scale_y_continuous(limits = c(5, 10)) +
-  scale_fill_manual(values = pal) +
+  scale_fill_manual(values = pal,
+                    labels = c('BASELINE', 'ENDPOINT')) +
   theme(legend.title = element_blank(),
-        legend.position = c(0.88, 0.89),
+        legend.position = c(0.8, 0.89),
         legend.text = element_text(size = 20)); shift_B
   
 # Plot 2
@@ -1097,10 +1165,10 @@ diff_B <- diff_all_1 %>%
              fill = pal[[1]],
              size = 8) +
   labs(title = 'Scenario 1B',
-       subtitle = 'Threshold 0: V1 = 6.0 (1.6), V2 = 6.0 (1.6), r = 0.32',
+       subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4), ENDPOINT = 6.1 (1.4), r = 0.34',
        x = 'Baseline pain intensity inclusion threshold',
-       y = 'Mean difference (V1 - V2)') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_B
+       y = 'Mean difference') +
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_B
 ```
 
 \newpage
@@ -1193,7 +1261,7 @@ ggMarginal(ggplot(data = cor_051) +
                annotate(geom = 'text', x = mean(cor_051$V1) + 0.2, y = -4.75, 
                         hjust = 0, size = 5,
                         label = str_glue("SD = {round(sd(cor_051$V1), 2)}")) +
-               labs(title = 'Scenario 1B: Constrained',
+               labs(title = 'Scenario 1C: Constrained',
                     caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
                     x = 'V1*',
                     y = 'V2*') +
@@ -1203,7 +1271,7 @@ ggMarginal(ggplot(data = cor_051) +
                                   breaks = c(0, 5, 10)))
 ```
 
-## Sample size after contraining data
+## Sample size after constraining data
 
 ```{r}
 nrow(cor_051)
@@ -1286,7 +1354,7 @@ ggplot(data = cor_051V2.df) +
     labs(title = 'Scenario 1C: Shift in V2 mean pain intensity',
          caption = '*Pain rated on a 0 to 10 numerical pain rating scale',
          x = 'Baseline pain intensity inclusion threshold',
-         y = 'Mean pain intensity*')
+         y = 'Mean pain intensity*') 
 ```
 
 ## Distributional shifts caused by having a threshold
@@ -1299,6 +1367,9 @@ placebo_3.0 <- cor_051 %>%
     filter(V1 >= 0) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
+
+# Set seed
+set.seed(2019)
 
 # Calculate the mean (95%CI) difference between V1 and V2
 diff_3.0 <- groupwiseMean(difference ~ 1,
@@ -1353,6 +1424,13 @@ ggMarginal(placebo_3.0[, 1:3] %>%
            groupFill = TRUE)
 ```
 
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_051) - nrow(placebo_3.0)
+```
+
+
 ### Threshold: 3
 
 ```{r three_threshold3}
@@ -1361,6 +1439,9 @@ placebo_3.3 <- cor_051 %>%
     filter(V1 >= 3) %>% 
     mutate(difference = V1 - V2) %>% 
     mutate(group = 'Threshold')
+
+# Set seed
+set.seed(2019)
 
 # Calculate the mean (95%CI) difference between V1 and V2
 diff_3.3 <- groupwiseMean(difference ~ 1,
@@ -1413,6 +1494,12 @@ ggMarginal(placebo_3.3[, 1:3] %>%
                      legend.position = c(0.8, 0.15)),
            groupColour = TRUE,
            groupFill = TRUE)
+```
+
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_051) - nrow(placebo_3.3)
 ```
 
 ### Threshold: 4
@@ -1480,6 +1567,12 @@ ggMarginal(placebo_3.4[, 1:3] %>%
            groupFill = TRUE)
 ```
 
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_051) - nrow(placebo_3.4)
+```
+
 ### Threshold: 5
 
 ```{r three_threshold5}
@@ -1545,29 +1638,39 @@ ggMarginal(placebo_3.5[, 1:3] %>%
            groupFill = TRUE)
 ```
 
+#### Points lost by cutoff
+
+```{r}
+nrow(cor_051) - nrow(placebo_3.5)
+```
+
 ## Summary plots
 
 ```{r three_plot0}
 # Plot 1
 shift_C <- cor_051V1.df %>% 
   bind_rows(cor_051V2.df) %>% 
+  filter(cutoff != 1 & cutoff != 2) %>% 
+  mutate(cutoff2 = c(-0.1, 0.9, 1.9, 2.9, 0.1, 1.1, 2.1, 3.1)) %>% 
   ggplot(data = .) + 
   aes(y = mean,
       x = cutoff2,
       fill= time) +
-  geom_hline(yintercept = 6.03,
+  geom_hline(yintercept = 6.1,
              linetype = 2) +
   geom_point(shape = 21,
              size = 8) +
   labs(title = 'Scenario 1C',
-       subtitle = 'Threshold 0: V1 = 6.0 (1.6), V2 = 6. (1.6), r = 0.46',
+       subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4), ENDPOINT = 6.1 (1.4), r = 0.49',
        x = 'Baseline pain intensity inclusion threshold',
        y = 'Mean pain intensity') +
-  scale_x_continuous(breaks = 0:5) +
+  scale_x_continuous(breaks = 0:3,
+                     labels = c(0, 3, 4, 5)) +
   scale_y_continuous(limits = c(5, 10)) +
-  scale_fill_manual(values = pal) +
+  scale_fill_manual(values = pal,
+                    labels = c('BASELINE', 'ENDPOINT')) +
   theme(legend.title = element_blank(),
-        legend.position = c(0.88, 0.89),
+        legend.position = c(0.80, 0.89),
         legend.text = element_text(size = 20)); shift_C
   
 # Plot 2
@@ -1589,10 +1692,10 @@ diff_C <- diff_all_1 %>%
              fill = pal[[1]],
              size = 8) +
   labs(title = 'Scenario 1C',
-       subtitle = 'Threshold 0: V1 = 6.0 (1.6), V2 = 6. (1.6), r = 0.46',
+       subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4), ENDPOINT = 6.1 (1.4), r = 0.49',
        x = 'Baseline pain intensity inclusion threshold',
-       y = 'Mean difference (V1 - V2)') +
-  scale_y_continuous(limits = c(-0.2, 1.5)); diff_C
+       y = 'Mean difference') +
+  scale_y_continuous(limits = c(-0.2, 1.0)); diff_C
 ```
 
 \newpage
@@ -1608,7 +1711,7 @@ shifts <- shift_A + shift_B + shift_C +
 
 ggsave(filename = 'figures/figure-scenario-1-baseline-shift.png',
        plot = shifts,
-       height = 7, 
+       height = 7.2, 
        width = 21)
 
 # Diffs
@@ -1617,7 +1720,7 @@ diffs <- diff_A + diff_B + diff_C +
 
 ggsave(filename = 'figures/figure-scenario-1-V1V2-difference.png',
        plot = diffs,
-       height = 7, 
+       height = 7.2, 
        width = 21)
 ```
 
