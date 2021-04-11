@@ -9,10 +9,10 @@ We used statistical modelling to assess the effects of pain intensity inclusion 
 
 ## Reproducibility
 For reproducibility we have built a docker image with the environment used to run the scripts:  
-[kamermanpr/regression-to-the-mean](https://hub.docker.com/repository/docker/kamermanpr/regression-to-the-mean)
+[kamermanpr/regression-to-the-mean](https://hub.docker.com/repository/docker/kamermanpr/regression-to-the-mean){target='_blank'}
 
 ### Using Docker to run the scripts
-You need to have docker installed on your computer. To do so, go to [docker.com](https://www.docker.com/community-edition#/download) and follow the instructions for installing Docker for your operating system. Once Docker has been installed, follow the steps below, noting that Docker commands are entered in a terminal window (Linux and OSX/macOS) or command prompt window (Windows). 
+You need to have docker installed on your computer. To do so, go to [docker.com](https://www.docker.com/community-edition#/download){target='_blank'} and follow the instructions for installing Docker for your operating system. Once Docker has been installed, follow the steps below, noting that Docker commands are entered in a terminal window (Linux and OSX/macOS) or command prompt window (Windows). 
 
 #### Download the latest image
 Enter: `docker pull kamermanpr/regression-to-the-mean:v1.3`
@@ -29,7 +29,7 @@ Enter: `docker run --name pain_regression -d -p 8787:8787 -e USER=user -e PASSWO
     - Password: _password_
     
 #### Upload repository
-- Go to the [regression-to-the-mean](https://github.com/kamermanpr/regression-to-the-mean.git) repository on GitHub and select _Code_ and then _Download ZIP_.
+- Go to the [regression-to-the-mean](https://github.com/kamermanpr/regression-to-the-mean.git){target='_blank'} repository on GitHub and select _Code_ and then _Download ZIP_.
 
 - In the _Files_ tab on the lower right panel of RStudio, click **Upload**, located the zip file you downloaded and the click **OK**. The zip file will be uploaded and will automatically unzip, giving you access to all the content, including the analysis scripts, for the project.
 
