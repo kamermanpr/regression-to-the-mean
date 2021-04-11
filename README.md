@@ -1,9 +1,9 @@
 # Regression to the mean
 
-# Bibliographic information
+## Bibliographic information
 Kamerman PR, Vollert J. Greater baseline pain inclusion criteria in clinical trials increases regression to the mean effect: a modelling study.
 
-# Abstract
+## Abstract
 We used statistical modelling to assess the effects of pain intensity inclusion thresholds (3/10, 4/10, and 5/10 on an 11-point NRS) on the magnitude of the regression to the mean effect under conditions that were consistent with the sample mean and variance, and inter-measurement correlation observed in clinical trials for the management of chronic pain. All data were modelled on a hypothetical placebo control group. We found a progressive increase in the mean pain intensity as the pain inclusion threshold increased, but this increase was not uniform, having an increasing effect on baseline measurements compared to study endpoint measurements as the threshold was increased. That is, the regression to the mean effect was magnified by increasing inclusion thresholds. Further, the effect increasing pain inclusion thresholds had on the regression to the mean effect was increased by decreasing sample means at baseline and inter-measurement correlations, and increasing sample variance. At its smallest the regression to the mean effect was 0.13/10 (95% CI: 0.03/10 to 0.24/10; threshold: 3/10, baseline mean pain: 6.5/10, standard deviation: 1.6/10, correlation: 0.44) and at its greatest it was 0.78/10 (95% CI: 0.63/10 to 0.94/10; threshold: 5/10, baseline mean pain: 6/10, standard deviation: 1.8/10, correlation: 0.19). We have shown that using pain inclusion thresholds in clinical trials drives progressively larger regression to the mean effects. We believe that a threshold of 3/10, offers the best compromise between maintaining assay sensitivity (the goal of thresholds) and the size of the regression to the mean effect.
 
 
