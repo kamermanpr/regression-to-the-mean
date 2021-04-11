@@ -35,4 +35,11 @@ Enter: `docker run --name pain_regression -d -p 8787:8787 -e USER=user -e PASSWO
 
 - Please note that because the output file is a PDF, the build will be slow because the required latex packages will need to be downloaded and installed (this is an automatic process, but it is slow).
 
+#### Shutting down the container
+- Once done, log out of RStudio and enter the following into a terminal to stop the Docker container: `docker stop pain_regression`. 
+
+- If you then want to remove the container, enter: `docker rm pain_regression`. 
+
+- If you also want to remove the Docker image you downloaded, enter: `docker rmi kamermanpr/pain_regression:v1.3`
+
 
