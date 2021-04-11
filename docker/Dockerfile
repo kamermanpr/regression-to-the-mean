@@ -1,8 +1,8 @@
 #-- Pull the latest image from Docker Hub --#
-# docker pull kamermanpr/regression-to-the-mean:v1.3
+# docker pull kamermanpr/regression-to-the-mean:v1.4
 
 #-- Run command --#
-# docker run --name pain_regression -d -p 8787:8787 -e USER=user -e PASSWORD=password kamermanpr/regression-to-the-mean:v1.3
+# docker run --name pain_regression -d -p 8787:8787 -e USER=user -e PASSWORD=password kamermanpr/regression-to-the-mean:v1.4
 
 #-- Login to RStudio --#
 # In your browser, navigate to: localhost:8787
@@ -17,4 +17,4 @@ MAINTAINER Peter Kamerman <peter.kamerman@gmail.com>
 
 #-- Install extra packages --#
 
-RUN Rscript -e "install.packages(c('boot', 'ggExtra', 'MASS', 'MBESS', 'matrixStats', 'patchwork', 'rcompanion', 'remotes', 'skimr'), dependencies = TRUE)"
+RUN Rscript -e "install.packages(c('boot', 'ggExtra', 'MASS', 'MBESS', 'matrixStats', 'patchwork', 'rcompanion', 'rmarkdown', 'skimr'), dependencies = TRUE)"
