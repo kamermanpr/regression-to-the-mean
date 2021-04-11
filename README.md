@@ -15,11 +15,11 @@ For reproducibility we have built a docker image with the environment used to ru
 You need to have docker installed on your computer. To do so, go to [docker.com](https://www.docker.com/community-edition#/download) and follow the instructions for installing Docker for your operating system. Once Docker has been installed, follow the steps below, noting that Docker commands are entered in a terminal window (Linux and OSX/macOS) or command prompt window (Windows). 
 
 #### Download the latest image
-Enter: `docker pull kamermanpr/regression-to-the-mean:v1.4`
+Enter: `docker pull kamermanpr/regression-to-the-mean:v1.6`
 
 #### Run the container
 
-Enter: `docker run --name pain_regression -d -p 8787:8787 -e USER=user -e PASSWORD=password kamermanpr/regression-to-the-mean:v1.4`
+Enter: `docker run --name pain_regression -d -p 8787:8787 -e USER=user -e PASSWORD=password kamermanpr/regression-to-the-mean:v1.6`
 
 #### Login to RStudio Server
 - Open a web browser window and navigate to: `localhost:8787`
@@ -40,6 +40,6 @@ Enter: `docker run --name pain_regression -d -p 8787:8787 -e USER=user -e PASSWO
 
 - If you then want to remove the container, enter: `docker rm pain_regression`. 
 
-- If you also want to remove the Docker image you downloaded, enter: `docker rmi kamermanpr/pain_regression:v1.3`
+- If you also want to remove the Docker image you downloaded, enter: `docker rmi kamermanpr/pain_regression:v1.6`
 
 
