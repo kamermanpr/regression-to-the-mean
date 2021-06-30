@@ -1816,9 +1816,11 @@ diff_A2 <- diff_all_1 %>%
       ymax = Bca.upper) +
   geom_hline(yintercept = 0, 
              linetype = 2) +
-  geom_errorbar(width = 0.4) +
+  geom_errorbar(width = 0.4,
+                size = 0.8) +
   geom_point(shape = 21,
              fill = pal[[1]],
+             stroke = 0.8,
              size = 10) +
   labs(title = 'Scenario 1A',
        subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4)\nENDPOINT = 6.1 (1.4), r = 0.23',
@@ -1842,9 +1844,11 @@ diff_B2 <- diff_all_1 %>%
       ymax = Bca.upper) +
   geom_hline(yintercept = 0, 
              linetype = 2) +
-  geom_errorbar(width = 0.4) +
+  geom_errorbar(width = 0.4,
+                size = 0.8) +
   geom_point(shape = 21,
              fill = pal[[1]],
+             stroke = 0.8,
              size = 10) +
   labs(title = 'Scenario 1B',
        subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4)\nENDPOINT = 6.1 (1.4), r = 0.34',
@@ -1867,9 +1871,11 @@ diff_C2 <- diff_all_1 %>%
       ymax = Bca.upper) +
   geom_hline(yintercept = 0, 
              linetype = 2) +
-  geom_errorbar(width = 0.4) +
+  geom_errorbar(width = 0.4,
+                size = 0.8) +
   geom_point(shape = 21,
              fill = pal[[1]],
+             stroke = 0.8,
              size = 10) +
   labs(title = 'Scenario 1C',
        subtitle = 'Threshold 0:\nBASELINE = 6.1 (1.4)\nENDPOINT = 6.1 (1.4), r = 0.49',
