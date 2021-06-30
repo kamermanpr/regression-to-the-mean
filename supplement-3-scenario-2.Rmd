@@ -1876,7 +1876,8 @@ shift_A2 <- cor_026V1.df %>%
   geom_hline(yintercept = 6.05,
              linetype = 2) +
   geom_point(shape = 21,
-             size = 10) +
+             size = 10,
+             stroke = 0.8) +
   labs(title = 'Scenario 2A',
        x = NULL,
        y = 'Mean pain intensity',
@@ -1886,9 +1887,6 @@ shift_A2 <- cor_026V1.df %>%
   scale_y_continuous(limits = c(5, 10)) +
   scale_fill_manual(labels = c('BASELINE', 'ENDPOINT'),
                     values = pal) +
-  theme(legend.title = element_blank(),
-        legend.position = c(0.8, 0.89),
-        legend.text = element_text(size = 20)) +
   theme_bw(base_size = 24) +
   theme(legend.position = 'none',
         axis.text = element_text(colour = '#000000',
@@ -1909,7 +1907,8 @@ shift_B2 <- cor_037V1.df %>%
   geom_hline(yintercept = 6.04,
              linetype = 2) +
   geom_point(shape = 21,
-             size = 10) +
+             size = 10,
+             stroke = 0.8) +
   labs(title = 'Scenario 2B', 
        subtitle = 'Threshold 0:\nBASELINE = 6.0 (1.6)\nENDPOINT = 6.0 (1.6), r = 0.32',
        x = NULL,
@@ -1919,9 +1918,6 @@ shift_B2 <- cor_037V1.df %>%
   scale_y_continuous(limits = c(5, 10)) +
   scale_fill_manual(values = pal,
                     labels = c('BASELINE', 'ENDPOINT')) +
-  theme(legend.title = element_blank(),
-        legend.position = c(0.8, 0.89),
-        legend.text = element_text(size = 20)) +
   theme_bw(base_size = 24) +
   theme(legend.position = 'none',
         axis.text = element_text(colour = '#000000',
@@ -1942,7 +1938,8 @@ shift_C2 <- cor_051V1.df %>%
   geom_hline(yintercept = 6.03,
              linetype = 2) +
   geom_point(shape = 21,
-             size = 10) +
+             size = 10,
+             stroke = 0.8) +
   labs(title = 'Scenario 2C',
        subtitle = 'Threshold 0:\nBASELINE = 6.0 (1.6)\nENDPOINT = 6.0 (1.6), r = 0.46',
        x = NULL,
