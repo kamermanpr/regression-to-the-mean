@@ -1735,13 +1735,7 @@ shift_A2 <- cor_026V1.df %>%
                                  size = 24),
         panel.grid = element_blank(),
         plot.title = element_text(size = 24),
-        plot.subtitle = element_text(size = 20)) +
-  theme_bw(base_size = 24) +
-  theme(axis.text = element_text(colour = '#000000',
-                                 size = 24),
-        panel.grid = element_blank(),
-        plot.title = element_text(size = 24),
-        plot.subtitle = element_text(size = 20))
+        plot.subtitle = element_text(size = 20)) 
   
 shift_B2 <- cor_037V1.df %>% 
   bind_rows(cor_037V2.df) %>% 
@@ -1771,13 +1765,7 @@ shift_B2 <- cor_037V1.df %>%
                                  size = 24),
         panel.grid = element_blank(),
         plot.title = element_text(size = 24),
-        plot.subtitle = element_text(size = 20)) +
-  theme_bw(base_size = 24) +
-  theme(axis.text = element_text(colour = '#000000',
-                                 size = 24),
-        panel.grid = element_blank(),
-        plot.title = element_text(size = 24),
-        plot.subtitle = element_text(size = 20))
+        plot.subtitle = element_text(size = 20)) 
 
 shift_C2 <- cor_051V1.df %>% 
   bind_rows(cor_051V2.df) %>% 
@@ -1807,13 +1795,7 @@ shift_C2 <- cor_051V1.df %>%
                                  size = 24),
         panel.grid = element_blank(),
         plot.title = element_text(size = 24),
-        plot.subtitle = element_text(size = 20)) +
-  theme_bw(base_size = 24) +
-  theme(axis.text = element_text(colour = '#000000',
-                                 size = 24),
-        panel.grid = element_blank(),
-        plot.title = element_text(size = 24),
-        plot.subtitle = element_text(size = 20))
+        plot.subtitle = element_text(size = 20)) 
   
 shifts <- shift_A2 + shift_B2 + shift_C2 + 
   plot_layout(ncol = 3)
