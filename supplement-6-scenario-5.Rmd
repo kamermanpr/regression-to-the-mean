@@ -1825,7 +1825,13 @@ diff_A2 <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 6.5 (1.6)\nENDPOINT = 6.5 (1.6), r = 0.2',
        x = NULL,
        y = NULL) +
-  scale_y_continuous(limits = c(-0.2, 1.0))
+  scale_y_continuous(limits = c(-0.2, 1.0)) +
+  theme_bw(base_size = 24) +
+  theme(axis.text = element_text(colour = '#000000',
+                                 size = 24),
+        panel.grid = element_blank(),
+        plot.title = element_text(size = 24),
+        plot.subtitle = element_text(size = 20))
 
 diff_B2 <- diff_all_1 %>% 
   mutate(Threshold = factor(.id)) %>% 
@@ -1846,7 +1852,13 @@ diff_B2 <- diff_all_1 %>%
        subtitle = 'Threshold 0\nBASELINE = 6.5 (1.6)\nENDPOINT = 6.5 (1.6), r = 0.31',
        x = NULL,
        y = NULL) +
-  scale_y_continuous(limits = c(-0.2, 1.0))
+  scale_y_continuous(limits = c(-0.2, 1.0)) +
+  theme_bw(base_size = 24) +
+  theme(axis.text = element_text(colour = '#000000',
+                                 size = 24),
+        panel.grid = element_blank(),
+        plot.title = element_text(size = 24),
+        plot.subtitle = element_text(size = 20))
 
 diff_C2 <- diff_all_1 %>% 
   mutate(Threshold = factor(.id)) %>% 
@@ -1867,7 +1879,13 @@ diff_C2 <- diff_all_1 %>%
        subtitle = 'Threshold 0:\nBASELINE = 6.5 (1.6)\nENDPOINT = 6.5 (1.6), r = 0.44',
        x = NULL,
        y = NULL) +
-  scale_y_continuous(limits = c(-0.2, 1.0))
+  scale_y_continuous(limits = c(-0.2, 1.0)) +
+  theme_bw(base_size = 24) +
+  theme(axis.text = element_text(colour = '#000000',
+                                 size = 24),
+        panel.grid = element_blank(),
+        plot.title = element_text(size = 24),
+        plot.subtitle = element_text(size = 20))
 
 diffs <- diff_A2 + diff_B2 + diff_C2 +
   plot_layout(ncol = 3)
