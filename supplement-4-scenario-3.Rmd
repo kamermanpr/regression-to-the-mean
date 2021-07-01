@@ -1716,8 +1716,8 @@ shift_A2 <- cor_026V1.df %>%
              size = 10,
              stroke = 0.8) +
   labs(title = 'Scenario 3A',
-       x = 'Baseline inclusion threshold',
-       y = 'Mean pain intensity',
+       x = NULL,
+       y = NULL,
        subtitle = 'Threshold 0:\nBASELINE = 6.0 (1.8)\nENDPOINT = 6.0 (1.9), r = 0.19') +
   scale_x_continuous(breaks = c(0, 1, 2, 3),
                      labels = c(0, 3, 4, 5)) +
@@ -1728,7 +1728,6 @@ shift_A2 <- cor_026V1.df %>%
   theme(legend.position = 'none',
         axis.text = element_text(colour = '#000000',
                                  size = 24),
-        axis.title = element_text(size = 24),
         panel.grid = element_blank(),
         plot.title = element_text(size = 24),
         plot.subtitle = element_text(size = 20))
@@ -1748,7 +1747,7 @@ shift_B2 <- cor_037V1.df %>%
              stroke = 0.8) +
   labs(title = 'Scenario 3B',
        subtitle = 'Threshold 0:\nBASELINE = 6.0 (1.8)\nENDPOINT = 5.9 (1.9), r = 0.3',
-       x = 'Baseline inclusion threshold',
+       x = NULL,
        y = NULL) +
   scale_x_continuous(breaks = 0:3,
                      labels = c(0, 3, 4, 5)) +
@@ -1759,7 +1758,6 @@ shift_B2 <- cor_037V1.df %>%
   theme(legend.position = 'none',
         axis.text = element_text(colour = '#000000',
                                  size = 24),
-        axis.title = element_text(size = 24),
         panel.grid = element_blank(),
         plot.title = element_text(size = 24),
         plot.subtitle = element_text(size = 20))
@@ -1779,7 +1777,7 @@ shift_C2 <- cor_051V1.df %>%
              stroke = 0.8) +
   labs(title = 'Scenario 3C',
        subtitle = 'Threshold 0:\nBASELINE = 6.0 (1.8)\nENDPOINT = 5.9 (1.9), r = 0.43',
-       x = 'Baseline pain threshold',
+       x = NULL,
        y = NULL) +
   scale_x_continuous(breaks = 0:3,
                      labels = c(0, 3, 4, 5)) +
@@ -1790,7 +1788,6 @@ shift_C2 <- cor_051V1.df %>%
   theme(legend.position = 'none',
         axis.text = element_text(colour = '#000000',
                                  size = 24),
-        axis.title = element_text(size = 24),
         panel.grid = element_blank(),
         plot.title = element_text(size = 24),
         plot.subtitle = element_text(size = 20))
@@ -1800,7 +1797,7 @@ shifts <- shift_A2 + shift_B2 + shift_C2 +
 
 ggsave(filename = 'figures/figure-scenario-3-baseline-shift.png',
        plot = shifts,
-       height = 7.9, 
+       height = 7.5, 
        width = 21)
 
 # Diffs
@@ -1821,13 +1818,12 @@ diff_A2 <- diff_all_1 %>%
              size = 10) +
   labs(title = 'Scenario 3A',
        subtitle = 'Threshold 0:\nBASELINE = 6.0 (1.8)\nENDPOINT = 6.0 (1.9), r = 0.19',
-       x = 'Baseline inclusion threshold',
-       y = 'Mean difference') +
+       x = NULL,
+       y = NULL) +
   scale_y_continuous(limits = c(-0.2, 1.0)) +
   theme_bw(base_size = 24) +
   theme(axis.text = element_text(colour = '#000000',
                                  size = 24),
-        axis.title = element_text(size = 24),
         panel.grid = element_blank(),
         plot.title = element_text(size = 24),
         plot.subtitle = element_text(size = 20))
@@ -1849,13 +1845,12 @@ diff_B2 <- diff_all_1 %>%
              size = 10) +
   labs(title = 'Scenario 3B',
        subtitle = 'Threshold 0:\nBASELINE = 6.0 (1.8)\nENDPOINT = 5.9 (1.9), r = 0.3',
-       x = 'Baseline inclusion threshold',
+       x = NULL,
        y = NULL) +
   scale_y_continuous(limits = c(-0.2, 1.0)) +
   theme_bw(base_size = 24) +
   theme(axis.text = element_text(colour = '#000000',
                                  size = 24),
-        axis.title = element_text(size = 24),
         panel.grid = element_blank(),
         plot.title = element_text(size = 24),
         plot.subtitle = element_text(size = 20))
@@ -1877,13 +1872,12 @@ diff_C2 <- diff_all_1 %>%
              size = 10) +
   labs(title = 'Scenario 3C',
        subtitle = 'Threshold 0:\nBASELINE = 6.0 (1.8)\nENDPOINT = 5.9 (1.9), r = 0.43',
-       x = 'Baseline inclusion threshold',
+       x = NULL,
        y = NULL) +
   scale_y_continuous(limits = c(-0.2, 1.0)) +
   theme_bw(base_size = 24) +
   theme(axis.text = element_text(colour = '#000000',
                                  size = 24),
-        axis.title = element_text(size = 24),
         panel.grid = element_blank(),
         plot.title = element_text(size = 24),
         plot.subtitle = element_text(size = 20))
@@ -1893,7 +1887,7 @@ diffs <- diff_A2 + diff_B2 + diff_C2 +
 
 ggsave(filename = 'figures/figure-scenario-3-V1V2-difference.png',
        plot = diffs,
-       height = 7.9, 
+       height = 7.5, 
        width = 21)
 ```
 
